@@ -28,3 +28,20 @@
 
 ---
 
+## 食用说明
+
+**1. 下载 releases 最新版的压缩包**
+
+<img src='./assert/1.png'>
+
+<img src='./assert/2.png'>
+
+**2. 解压压缩包**
+
+这个不用我说了吧 QwQ
+
+解压至随便哪个目录都可以，你喜欢就行
+
+**3. 运行 main.exe 文件即可**
+
+<img src='./assert/3.png'>
