@@ -3,10 +3,11 @@
         一键评教 WallNut 版
     </h1>
     本资源仅供学习交流使用，严禁用于商业与非法用途，请于24小时内删除。
-    <div style="padding: 2px; width: max-content; border-bottom: 2px solid white;">
-        本程序初衷仅用于学习 VBS 脚本的编写和小应用的开发。
-    </div>
+    <br>
+    本程序初衷仅用于学习 VBS 脚本的编写和小应用的开发。
 </div>
+
+---
 
 <div>
     据说西电有个要求: 不评教不能查看学期考成绩。
