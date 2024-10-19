@@ -70,3 +70,8 @@ pip install pyinstaller
 pyinstaller --onefile --windowed main.py
 ```
 
+也可以添加图标：
+
+```bash
+pyinstaller --onefile --windowed --icon=./assert/icon.ico main.py
+```
