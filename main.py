@@ -18,33 +18,41 @@ import os
 import subprocess
 import webbrowser
 
+
 class ConfigGenerator(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
-        
+
         # 在初始化时打开网页
         self.open_website()
 
     def open_website(self):
         url = "https://ehall.xidian.edu.cn/jwapp/sys/wspjyyapp/*default/index.do"
-        
+
         browsers = [
-            ("edge", "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"),
+            (
+                "edge",
+                "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+            ),
             ("firefox", "C:\\Program Files\\Mozilla Firefox\\firefox.exe"),
-            ("360", "C:\\Program Files (x86)\\360\\360se6\\Application\\360se.exe")
+            ("360", "C:\\Program Files (x86)\\360\\360se6\\Application\\360se.exe"),
         ]
 
         for browser_name, browser_path in browsers:
             if os.path.exists(browser_path):
                 try:
-                    webbrowser.register(browser_name, None, webbrowser.BackgroundBrowser(browser_path))
+                    webbrowser.register(
+                        browser_name, None, webbrowser.BackgroundBrowser(browser_path)
+                    )
                     webbrowser.get(browser_name).open(url)
                     self.console_output.append(f"使用 {browser_name} 打开网页成功")
                     return
                 except Exception as e:
-                    self.console_output.append(f"尝试使用 {browser_name} 打开网页失败：{str(e)}")
-        
+                    self.console_output.append(
+                        f"尝试使用 {browser_name} 打开网页失败：{str(e)}"
+                    )
+
         # 如果所有指定的浏览器都不可用，尝试使用系统默认浏览器
         try:
             webbrowser.open(url)
@@ -223,15 +231,6 @@ class ConfigGenerator(QWidget):
                 break
         self.console_output.append(f"选择的评语：{self.selected_comment}")
 
-        # print(
-        #     self.need_auto_select,
-        #     self.select_questions_count,
-        #     self.selected_option,
-        #     self.need_textbox,
-        #     self.textbox_count,
-        #     self.selected_comment,
-        # )
-
         # 将 self.selected_comment 复制到剪切板
         clipboard = QApplication.clipboard()
         clipboard.setText(self.selected_comment)
@@ -250,7 +249,7 @@ class ConfigGenerator(QWidget):
         self.timer.start(50)  # 每50毫秒更新一次进度
 
     def update_progress(self):
-        if self.progress < 100:
+        if self.progress < 95:
             self.progress += random.randint(1, 5)
         cursor = self.console_output.textCursor()
         cursor.setPosition(self.progress_line)
