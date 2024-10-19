@@ -50,3 +50,19 @@
 
 <img src='./assert/3.png'>
 
+## 开发者指南
+
+> 打包 main.py 为 exe 文件（使用 PyInstaller）
+
+**1. 安装 PyInstaller**
+
+```bash
+pip install pyinstaller
+```
+
+**2. 打包**
+
+```bash
+pyinstaller --onefile --windowed main.py
+```
+
