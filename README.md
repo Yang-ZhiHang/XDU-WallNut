@@ -56,11 +56,15 @@
 
 **1. 安装 PyInstaller**
 
+打开终端，安装 pyinstaller 包：
+
 ```bash
 pip install pyinstaller
 ```
 
 **2. 打包**
+
+在 main.py 所在目录执行以下命令：
 
 ```bash
 pyinstaller --onefile --windowed main.py
