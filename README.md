@@ -68,11 +68,25 @@ pip install pyinstaller
 在 main.py 所在目录执行以下命令：
 
 ```bash
-pyinstaller --onefile --windowed main.py
+pyinstaller --onefile --windowed --icon=favicon.ico --clean --add-data "styles;styles" --add-data "ui;ui" --add-data "utils;utils" --add-data "favicon.ico;." main.py
 ```
 
 也可以添加图标：
 
 ```bash
 pyinstaller --onefile --windowed --icon=./assert/icon.ico main.py
+```
+
+PyInstaller 常用参数说明：
+```
+--onefile        将程序打包成单个可执行文件
+--windowed       不显示命令行窗口
+--icon=FILE      指定可执行文件的图标
+--name=NAME      指定生成的可执行文件名称
+--clean          在构建之前清理临时文件
+--add-data       添加额外的文件/文件夹到可执行文件中
+--hidden-import  打包隐式导入的模块
+--debug=all      生成调试信息（用于排查打包问题）
+--distpath=DIR   指定生成文件的输出目录
+--workpath=DIR   指定临时文件的存放目录
 ```
