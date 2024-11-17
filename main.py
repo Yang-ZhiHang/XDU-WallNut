@@ -1,6 +1,5 @@
 import sys
 from PyQt5.QtWidgets import QApplication
-from PyQt5 import QtGui, QtCore
 from utils.browser_utils import open_website
 from utils.config_handler import ConfigHandler
 from ui.base_window import BaseWindow
