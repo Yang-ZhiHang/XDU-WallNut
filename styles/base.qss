@@ -6,7 +6,6 @@ QWidget {
 
 QLabel {
     color: #e0e0e0;
-    font-size: 14px;
 }
 
 QLineEdit {
@@ -29,7 +28,6 @@ QPushButton {
     border: none;
     padding: 8px 16px;
     border-radius: 4px;
-    font-size: 13px;
 }
 
 QPushButton:hover {
@@ -52,7 +50,6 @@ QTextEdit {
     border-radius: 4px;
     padding: 8px;
     font-family: 'Consolas', 'Microsoft YaHei Mono';
-    font-size: 13px;
     selection-background-color: #3d7aab;
 }
 

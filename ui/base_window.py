@@ -7,7 +7,6 @@ import sys
 import os
 sys.path.append('utils')
 
-from utils.style_loader import load_stylesheet
 from ui.components.input_section import InputSection
 
 class BaseWindow(QWidget):
@@ -20,7 +19,7 @@ class BaseWindow(QWidget):
     def initUI(self):
 
         # 设置窗口大小
-        self.setGeometry(100, 100, 400, 400)
+        self.setGeometry(100, 100, 600, 400)
 
         # 设置窗口标题
         self.setWindowTitle("XDU一键评教")
@@ -32,13 +31,6 @@ class BaseWindow(QWidget):
             base_path = "./"
         ret_path = os.path.join(base_path, "favicon.ico")
         self.setWindowIcon(QIcon(ret_path)) 
-
-        
-        
-        # 加载样式表
-        style = load_stylesheet()
-        if style:
-            self.setStyleSheet(style)
 
         # 初始化组件
         self.input_section = InputSection(self)
