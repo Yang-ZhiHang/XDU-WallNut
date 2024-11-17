@@ -4,27 +4,29 @@
     </h1>
     本资源仅供学习交流使用，严禁用于商业与非法用途，请于24小时内删除。
     <br>
-    本程序初衷仅用于学习 VBS 脚本的编写和小程序的开发。
+    本程序初衷仅用于学习 VBS 脚本的编写和 Python 小程序的开发。
     <br>
-    如果有大佬欢迎贡献你的改进!
+    如果有大佬欢迎贡献你的想法!
 </div>
+
 
 ---
 
 <div>
     据说西电貌似有个要求: 不评教不能查看学期考成绩。
     <br>
-    But: "这么多教师，每个教师我都想选非常满意，全部评完得十几分钟。"
+    But: "这么多教师，每个教师我都想选非常满意，全部评完得花个几分钟慢慢点。"
     <br>
     于是乎作者写了段 VBS 脚本🤔，实现了自动评教的功能，并编译为可执行程序。
 </div>
 
 
----
 
+---
 
 ### 🚀 更新概况 🚀
 
+- **2024 年 11 月 17 日**：优化了用户界面，增加了代码的可维护性
 - **2024 年 10 月 19 日**：修复了若干 bug
 - **2024 年 10 月 15 日**：更新了 UI，优化了用户体验
 - **2024 年 10 月 14 日**：添加了部分功能
@@ -65,28 +67,77 @@ pip install pyinstaller
 
 **2. 打包**
 
-在 main.py 所在目录执行以下命令：
+首先在根目录执行一下命令：
 
-```bash
-pyinstaller --onefile --windowed --icon=favicon.ico --clean --add-data "styles;styles" --add-data "ui;ui" --add-data "utils;utils" --add-data "favicon.ico;." main.py
+```
+pyinstaller -F main.py
 ```
 
-也可以添加图标：
+这将会生成 `main.spec` 文件（其他文件忽略），
 
-```bash
-pyinstaller --onefile --windowed --icon=./assert/icon.ico main.py
+根据需要配置该文件，配置完成后执行以下命令即可完成 `XDU_WallNut.exe` 的编译：
+
+```
+pyinstaller main.spec
 ```
 
-PyInstaller 常用参数说明：
+作者的 `main.spec` 配置：
+
 ```
---onefile        将程序打包成单个可执行文件
---windowed       不显示命令行窗口
---icon=FILE      指定可执行文件的图标
---name=NAME      指定生成的可执行文件名称
---clean          在构建之前清理临时文件
---add-data       添加额外的文件/文件夹到可执行文件中
---hidden-import  打包隐式导入的模块
---debug=all      生成调试信息（用于排查打包问题）
---distpath=DIR   指定生成文件的输出目录
---workpath=DIR   指定临时文件的存放目录
+# -*- mode: python ; coding: utf-8 -*-
+
+block_cipher = None
+
+a = Analysis(
+    [
+        'main.py',
+        'D:/dev/XDU_WallNut/ui/__init__.py',
+        'D:/dev/XDU_WallNut/ui/base_window.py',
+        'D:/dev/XDU_WallNut/ui/components/console_section.py',
+        'D:/dev/XDU_WallNut/ui/components/input_section.py',
+        'D:/dev/XDU_WallNut/ui/components/console_section.py',
+        'D:/dev/XDU_WallNut/utils/__init__.py',
+        'D:/dev/XDU_WallNut/utils/browser_utils.py',
+        'D:/dev/XDU_WallNut/utils/config_handler.py',
+        'D:/dev/XDU_WallNut/utils/style_loader.py',
+    ],  # 此项目中所有的 python 脚本
+    pathex=['D:\\dev\\XDU_WallNut'],  # 项目绝对路径
+    binaries=[],
+    datas=[
+        ('styles/style.qss', 'styles'),
+        ('favicon.ico', '.')
+    ],
+    hiddenimports=[],
+    hookspath=[],
+    runtime_hooks=[],
+    excludes=[],
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
+    cipher=block_cipher,
+    noarchive=False
+)
+
+pyz = PYZ(
+    a.pure, a.zipped_data,
+    cipher=block_cipher
+)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    [],
+    name='XDU_WallNut',  # 打包程序的名字
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    runtime_tmpdir=None,
+    icon='D:/dev/XDU_WallNut/favicon.ico',  # 图标路径
+    console=False 
+)
 ```
+
