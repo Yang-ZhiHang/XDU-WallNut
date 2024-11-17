@@ -25,7 +25,7 @@ class BaseWindow(QWidget):
         # 设置窗口标题
         self.setWindowTitle("XDU一键评教")
 
-        # 设置窗口图标
+        # 设置窗口图标（不生效）
         if getattr(sys, 'frozen', False):
             base_path = sys._MEIPASS
         else:

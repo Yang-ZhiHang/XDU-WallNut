@@ -58,7 +58,7 @@ class ProgressHandler:
         try:
             # 执行根目录下的 exe
             config_params = ConfigHandler.get_config_params(self)
-            exe_path = os.path.join(os.getcwd(), "script.exe")
+            exe_path = os.path.join(os.getcwd(), "vbslauncher.exe")
             result = subprocess.run(
                 [exe_path] + config_params, capture_output=True, text=True
             )
