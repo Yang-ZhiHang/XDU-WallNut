@@ -13,12 +13,12 @@ a = Analysis(
         'D:/dev/XDU_WallNut/utils/__init__.py',
         'D:/dev/XDU_WallNut/utils/browser_utils.py',
         'D:/dev/XDU_WallNut/utils/config_handler.py',
-        'D:/dev/XDU_WallNut/utils/style_loader.py',
+        'D:/dev/XDU_WallNut/utils/style_handler.py',
     ],  # 此项目中所有的 python 脚本
     pathex=['D:\\dev\\XDU_WallNut'],  # 项目绝对路径
     binaries=[],
     datas=[
-        ('styles/style.qss', 'styles'),
+        ('styles/base.qss', 'styles'),
         ('favicon.ico', '.')
     ],
     hiddenimports=[],
