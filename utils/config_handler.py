@@ -197,6 +197,9 @@ class ConfigHandler:
         QTimer.singleShot(100, self.show_config)  # 100毫秒后显示新内容
 
     def get_config_params(self):
+        """
+        获取配置参数
+        """
         params = []
         params.append(str(self.window.need_auto_select))
         params.append(str(self.window.need_auto_textbox))
@@ -207,6 +210,5 @@ class ConfigHandler:
 
         if self.window.need_auto_textbox:
             params.append(self.window.textbox_count)
-            params.append(self.window.selected_comment)
 
         return params
