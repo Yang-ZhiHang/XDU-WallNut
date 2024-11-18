@@ -81,4 +81,8 @@ if __name__ == "__main__":
         ex.console_output,
     )
 
+    # 将窗口置于前台
+    ex.activateWindow()
+    ex.raise_()
+
     sys.exit(app.exec_())
