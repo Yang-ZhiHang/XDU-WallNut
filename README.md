@@ -39,6 +39,8 @@
 
 <img src='./assert/1.png'>
 
+下载有 `setup` 这个词的 `exe` 文件
+
 <img src='./assert/2.png'>
 
 **2. 解压压缩包**
