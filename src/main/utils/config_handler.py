@@ -1,3 +1,7 @@
+"""
+该模块用于处理配置相关操作
+"""
+
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication
 

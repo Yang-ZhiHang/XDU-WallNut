@@ -1,3 +1,7 @@
+"""
+该模块用于浏览器相关操作
+"""
+
 import os
 import webbrowser
 

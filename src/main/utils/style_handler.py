@@ -1,8 +1,9 @@
+"""
+该模块用于处理样式相关操作
+"""
+
 import os
 import sys
-
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QSize
 
 
 class StyleManager:

@@ -1,0 +1,27 @@
+{
+    "version": "1.2.2",
+    "author": {
+        "login": "Yang-ZhiHang",
+        "id": 152758723,
+        "node_id": "U_kgDOCRrpww",
+        "avatar_url": "https://avatars.githubusercontent.com/u/152758723?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/Yang-ZhiHang",
+        "html_url": "https://github.com/Yang-ZhiHang",
+        "followers_url": "https://api.github.com/users/Yang-ZhiHang/followers",
+        "following_url": "https://api.github.com/users/Yang-ZhiHang/following{/other_user}",
+        "gists_url": "https://api.github.com/users/Yang-ZhiHang/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/Yang-ZhiHang/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/Yang-ZhiHang/subscriptions",
+        "organizations_url": "https://api.github.com/users/Yang-ZhiHang/orgs",
+        "repos_url": "https://api.github.com/users/Yang-ZhiHang/repos",
+        "events_url": "https://api.github.com/users/Yang-ZhiHang/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/Yang-ZhiHang/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+    },
+    "name": "v1.2.2",
+    "published_at": "2024-11-17T15:42:45Z",
+    "description": "## 🚀更新概况🚀\r\n\r\n- 修复了字体自适应问题"
+}

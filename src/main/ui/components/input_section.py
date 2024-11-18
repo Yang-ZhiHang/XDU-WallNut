@@ -1,3 +1,7 @@
+"""
+该模块用于处理输入组件初始化
+"""
+
 from PyQt5.QtWidgets import (
     QVBoxLayout,
     QHBoxLayout,
@@ -6,7 +10,6 @@ from PyQt5.QtWidgets import (
     QButtonGroup,
     QLineEdit,
     QPushButton,
-    QTextEdit,
 )
 
 class InputSection(QVBoxLayout):
@@ -72,7 +75,6 @@ class InputSection(QVBoxLayout):
         self.window.layout_number_of_select_questions.addWidget(
             self.window.number_of_select_questions
         )
-        return self.window.layout_number_of_select_questions
 
     def init_layout_which_option(self):
         """
@@ -90,7 +92,6 @@ class InputSection(QVBoxLayout):
             self.window.option_group.addButton(option_button)
             option_layout.addWidget(option_button)
             self.window.layout_which_option.addLayout(option_layout)
-        return self.window.layout_which_option
 
     def init_layout_auto_textbox(self):
 
@@ -156,11 +157,4 @@ class InputSection(QVBoxLayout):
         """
         self.window.start_button = QPushButton("开始运行", self.window)
 
-    def init_console_output(self):
-        """
-        控制台输出
-        """
-        self.window.console_output = QTextEdit(self.window)
-        self.window.console_output.setReadOnly(True)
-        self.window.console_output.setPlaceholderText("控制台输出将显示在这里...")
-        return self.window.console_output
+    
