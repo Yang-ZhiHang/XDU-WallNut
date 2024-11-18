@@ -31,7 +31,7 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir=D:\dev\XDU_WallNut\dist
-OutputBaseFilename=XDU_WallNut_v1.2.2
+OutputBaseFilename=XDU_WallNut_setup
 SetupIconFile=D:\dev\XDU_WallNut\assert\setup.ico
 Compression=lzma
 SolidCompression=yes
@@ -47,6 +47,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "D:\dev\XDU_WallNut\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\dev\XDU_WallNut\dist\Updater.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\dev\XDU_WallNut\dist\version.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\dev\XDU_WallNut\dist\vbslauncher.exe"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
