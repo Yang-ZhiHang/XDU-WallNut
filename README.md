@@ -38,45 +38,45 @@
 
 **1. 下载最新版的应用程序**
 
-<img src='./assets/1.png'>
+<img src='./assets/images/1.png'>
 
 下载包含 `setup` 这个词的 `exe` 文件
 
-<img src='./assets/2.png'>
+<img src='./assets/images/2.png'>
 
 **2. 安装**
 
 下载到你中意的目录下💗
 
-<img src='./assets/3.png'>
+<img src='./assets/images/3.png'>
 
 无脑下一步下一步，点击安装🤪
 
-<img src='./assets/4.png'>
-<img src='./assets/5.png'>
-<img src='./assets/6.png'>
+<img src='./assets/images/4.png'>
+<img src='./assets/images/5.png'>
+<img src='./assets/images/6.png'>
 
 **3. 运行**
 
 如果你没有选择安装完成后自动运行，可以从目录进入，双击 `XDU_WallNut.exe` 即可运行
 
-<img src='./assets/11.png'>
+<img src='./assets/images/11.png'>
 
 运行后会自动跳转到评教页面（如果你没有登录过的话，需要手动登录）
 
 **4. 评教**
 
 [第一步] 进入评教页面
-<img src='./assets/7.png'>
+<img src='./assets/images/7.png'>
 
 [第二步] 根据评教信息，填入信息
-<img src='./assets/8.png'>
+<img src='./assets/images/8.png'>
 
 [第三步] 点击评教按钮，等待评教完成
-<img src='./assets/9.png'>
+<img src='./assets/images/9.png'>
 
 [第四步] 提交！
-<img src='./assets/10.png'>
+<img src='./assets/images/10.png'>
 
 
 
