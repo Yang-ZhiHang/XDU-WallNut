@@ -34,55 +34,49 @@
 
 ---
 
-## 食用说明
+## 快速开始
 
-**1. 下载 releases 最新版的压缩包**
+**1. 下载最新版的应用程序**
 
-<img src='./assert/1.png'>
+<img src='./assets/1.png'>
 
-下载有 `setup` 这个词的 `exe` 文件
+下载包含 `setup` 这个词的 `exe` 文件
 
-<img src='./assert/2.png'>
+<img src='./assets/2.png'>
 
-**2. 解压压缩包**
+**2. 安装**
 
-这个不用我说了吧 QwQ
+下载到你中意的目录下💗
 
-解压至随便哪个目录都可以，你喜欢就行
+<img src='./assets/3.png'>
 
-**3. 双击运行 main.exe 文件即可**
+无脑下一步下一步，点击安装🤪
 
-运行后自动跳转到评教页面，需要手动登录（如果你没有登录过的话）
+<img src='./assets/4.png'>
+<img src='./assets/5.png'>
+<img src='./assets/6.png'>
 
-<img src='./assert/3.png'>
+**3. 运行**
 
-## 开发者指南
+如果你没有选择安装完成后自动运行，可以从目录进入，双击 `XDU_WallNut.exe` 即可运行
 
-> 打包 main.py 为 exe 文件（使用 PyInstaller）
+<img src='./assets/11.png'>
 
-**1. 安装 PyInstaller**
+运行后会自动跳转到评教页面（如果你没有登录过的话，需要手动登录）
 
-打开终端，安装 pyinstaller 包：
+**4. 评教**
 
-```bash
-pip install pyinstaller
-```
+[第一步] 进入评教页面
+<img src='./assets/7.png'>
 
-**2. 打包**
+[第二步] 根据评教信息，填入信息
+<img src='./assets/8.png'>
 
-首先在根目录执行一下命令：
+[第三步] 点击评教按钮，等待评教完成
+<img src='./assets/9.png'>
 
-```
-pyinstaller -F main.py
-```
+[第四步] 提交！
+<img src='./assets/10.png'>
 
-这将会生成 `main.spec` 文件（其他文件忽略），
 
-根据需要配置该文件，配置完成后执行以下命令即可完成 `XDU_WallNut.exe` 的编译：
-
-```
-pyinstaller main.spec
-```
-
-作者的 `main.spec` 配置可以查看根目录下的相应文件。
 
