@@ -1,3 +1,3 @@
 # UI 相关常量
-COMMENTS_OPTIONS = ["无", "很好", "还不错"]
-OPTION_LABELS = ['选项 A', '选项 B', '选项 C', '选项 D']
+COMMENTS_OPTIONS = ["无", "很好", "还不错", "非常满意"]
+OPTION_LABELS = ['第一项', '第二项', '第三项', '第四项']
