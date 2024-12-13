@@ -12,8 +12,10 @@ from PyQt5.QtWidgets import (
     QTabWidget,
     QScrollArea,
     QLabel,
+    QTextBrowser,
 )
 from PyQt5.QtCore import Qt, QTimer
+import markdown
 
 
 try:
@@ -28,10 +30,11 @@ try:
     from ui.widgets.console_widget import ConsoleOutput
     from ui.widgets.input_form_widget import InputForm
     from ui.widgets.start_button_widget import StartButton
-    from utils.logger import Logger
     from ui.dialogs.message_dialog import MessageDialog
     from ui.widgets.title_bar_widget import TitleBarWidget
+    from utils.logger import Logger
     from core.services.evaluator import Evaluator
+    from core.services.update_checker import UpdateChecker
     import resources.resources_rc
 except ImportError as e:
     Logger.error("main_window.py", "main_window", "ImportError: " + str(e), color="red")
@@ -129,28 +132,32 @@ class MainWindow(QMainWindow):
         # ------------------------------- 设置 start
         # 设置布局
         self.layout_setting = QVBoxLayout()
-        
+
         # 添加标签显示
         self.empty_label = QLabel("这里什么都没有...")
         self.layout_setting.setAlignment(Qt.AlignCenter)  # 居中对齐
         self.empty_label.setAlignment(Qt.AlignCenter)  # 文字居中
-        self.empty_label.setStyleSheet("""
+        self.empty_label.setStyleSheet(
+            """
             QLabel {
                 font-size: 16px;
                 color: #666666;
                 padding: 20px;
             }
-        """)
+        """
+        )
         # ------------------------------- 设置 end
 
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.title_bar = TitleBarWidget()
 
         self._app_icon = QIcon(Icon.logo_ico_path)
-        self.style_loader = StyleLoader("base.qss")
-        self.web_loader = WebLoader()
         self.start_button = StartButton()
         self.console_output = ConsoleOutput()
+
+        self.style_loader = StyleLoader("base.qss")
+        self.web_loader = WebLoader()
+        self.update_checker = UpdateChecker()
 
     def _apply_component(self):
 
@@ -251,3 +258,25 @@ class MainWindow(QMainWindow):
         """脚本停止"""
         self.console_output.append("停止一键评教...")
 
+    def check_update(self):
+        """检查更新"""
+        if self.update_checker.check_update():
+            # 创建一个 QTextBrowser 来显示富文本
+            text_browser = QTextBrowser()
+            # 将 markdown 转换为 HTML
+            html_content = markdown.markdown(self.update_checker.version_info['release_notes'])
+            
+            # 构建完整的HTML消息
+            update_message = f"""检测到新版本 {self.update_checker.current_version} -> {self.update_checker.version_info['version']}
+            
+更新内容:
+{html_content}
+
+是否前往 Github 更新？"""
+            
+            text_browser.setHtml(update_message)
+            
+            if MessageDialog.show_info("更新提示", text_browser, "前往", "取消"):
+                self.web_loader.open_website(
+                    self.update_checker.version_info["release_url"]
+                )
