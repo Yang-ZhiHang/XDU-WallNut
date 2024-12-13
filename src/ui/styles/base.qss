@@ -79,6 +79,20 @@ QRadioButton::indicator:unchecked:hover {
     border: 2px solid #60a0e8;
 }
 
+/* 窗口标题栏样式 start
+----------------------------------- */
+QMainWindow::title {
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
+
+QDialog::title {
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
+/* 窗口标题栏样式 end
+----------------------------------- */
+
 /* 滚动条样式 start
 ----------------------------------- */
 QScrollBar:vertical {
