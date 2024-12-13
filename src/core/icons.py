@@ -6,4 +6,4 @@ import os
 from PyQt5.QtGui import QIcon
 
 class Icon:
-    logo_ico_path = "../assets/logo.png"
+    logo_ico_path = "./resources/logo.png"

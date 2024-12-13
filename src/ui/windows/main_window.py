@@ -13,11 +13,12 @@ try:
     from core.configs.constants import COMMENTS_OPTIONS, OPTION_LABELS
     from core.configs.settings import Settings
     from core.icons import Icon
-    from utils.logger import Logger
     from core.loaders.style_loader import StyleLoader
     from core.loaders.web_loader import WebLoader
     from ui.widgets.console_widget import ConsoleOutput
     from ui.widgets.input_form_widget import InputForm
+    from ui.widgets.start_button_widget import StartButton
+    from utils.logger import Logger
 except ImportError as e:
     print("配置导入失败，请检查配置文件是否存在", e)
 
@@ -44,9 +45,9 @@ class MainWindow(QMainWindow):
         if os.path.exists(Icon.logo_ico_path):
             Logger.info("main_window.py", "set_window_icon", "Found icon resource.", color="green")
             icon = QIcon(Icon.logo_ico_path)
+            self.setWindowIcon(icon)
         else:
             Logger.error("main_window.py", "set_window_icon", "Can't find icon resource.")
-        self.setWindowIcon(icon)
 
         # 创建中心部件并创建主布局
         self.central_widget = QWidget()
@@ -57,11 +58,24 @@ class MainWindow(QMainWindow):
         self.input_form_text = InputForm("是否评教文本框：", COMMENTS_OPTIONS)
         self.style_loader = StyleLoader("base.qss")
         self.web_loader = WebLoader()
+        self.start_button = StartButton()
         self.console_output = ConsoleOutput()
 
     def _apply_component(self):
         """应用所有初始化过的组件"""
         self.main_layout.addLayout(self.input_form_choices)
         self.main_layout.addLayout(self.input_form_text)
+        self.start_button.started.connect(self._script_start)
+        self.start_button.stopped.connect(self._script_stop)
+        self.main_layout.addWidget(self.start_button)
         self.main_layout.addWidget(self.console_output)
         self.setStyleSheet(self.style_loader.load_style())
+
+    def _script_start(self):
+        """脚本开始"""
+        self.console_output.append("开始一键评教...")
+
+    def _script_stop(self):
+        """脚本停止"""
+        self.console_output.append("停止一键评教...")
+
