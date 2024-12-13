@@ -36,54 +36,80 @@ class MainWindow(QMainWindow):
         # 设置窗口大小
         self.resize(*Settings.WINDOW_SIZE)
 
+        # 设置布局框架
+        self._set_layout()
+
         # 加载组件
         self._load_component()
 
         # 应用组件
         self._apply_component()
 
+    def _set_layout(self):
+        """
+        设置布局框架
 
-    def _load_component(self):
-        """初始化组件"""
+        中心布局 -> 标签页:
+            - 普通模式布局
+            - 增强模式布局
+        """
 
         # 创建中心部件并创建主布局
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
         self.main_layout = QVBoxLayout(self.central_widget)
 
-        # 添加标签页组件
+        # 创建分页
         self.tab_widget = QTabWidget()
         self.normal_tab = QWidget()
         self.enhanced_tab = QWidget()
         self.normal_layout = QVBoxLayout(self.normal_tab)
         self.enhanced_layout = QVBoxLayout(self.enhanced_tab)
 
+        # 设置分页
+        self.tab_widget.addTab(self.normal_tab, "普通模式")
+        self.tab_widget.addTab(self.enhanced_tab, "增强模式")
+        self.main_layout.addWidget(self.tab_widget)
+
+    def _load_component(self):
+        # ------------------------------- 普通模式 start
+        self.input_form_choices = InputForm(
+            "是否评教选择题：", OPTION_LABELS, default_option="yes"
+        )
+        self.input_form_text = InputForm(
+            "是否评教文本框：", COMMENTS_OPTIONS, default_option="no"
+        )
+        # ------------------------------- 普通模式 end
+
+        # ------------------------------- 增强模式 start
+
+        # ------------------------------- 增强模式 end
+
         self._app_icon = QIcon(Icon.logo_ico_path)
-        self.input_form_choices = InputForm("是否评教选择题：", OPTION_LABELS, default_option="yes")
-        self.input_form_text = InputForm("是否评教文本框：", COMMENTS_OPTIONS, default_option="no")
         self.style_loader = StyleLoader("base.qss")
         self.web_loader = WebLoader()
         self.start_button = StartButton()
         self.console_output = ConsoleOutput()
 
     def _apply_component(self):
-        """应用所有初始化过的组件"""
         self.setWindowIcon(self._app_icon)
-        
-        # 设置标签页
-        self.tab_widget.addTab(self.normal_tab, "普通模式")
-        self.tab_widget.addTab(self.enhanced_tab, "增强模式")
-        self.main_layout.addWidget(self.tab_widget)
 
-        # 将现有组件添加到普通模式标签页
+        # ------------------------------- 普通模式 start
         self.normal_layout.addLayout(self.input_form_choices)
         self.normal_layout.addLayout(self.input_form_text)
         self.input_form_choices.update_visibility()
         self.input_form_text.update_visibility()
+
+        # ------------------------------- 普通模式 end
+
+        # ------------------------------- 增强模式 start
+
+        # ------------------------------- 增强模式 end
+
         self.start_button.started.connect(self._script_start)
         self.start_button.stopped.connect(self._script_stop)
-        self.normal_layout.addWidget(self.start_button)
-        self.normal_layout.addWidget(self.console_output)
+        self.main_layout.addWidget(self.start_button)
+        self.main_layout.addWidget(self.console_output)
 
         # 应用样式
         self.setStyleSheet(self.style_loader.load_style())
