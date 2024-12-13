@@ -214,9 +214,5 @@ QTabBar::tab:hover:!selected {
 QTabBar::tab:disabled {
     color: #808080;
 }
-
-QTabWidget::tab-bar {
-    alignment: left;
-}
 /* 标签页样式 end
 ----------------------------------- */
