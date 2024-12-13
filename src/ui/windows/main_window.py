@@ -11,9 +11,9 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QTabWidget,
     QScrollArea,
+    QLabel,
 )
 from PyQt5.QtCore import Qt, QTimer
-from time import sleep
 
 
 try:
@@ -76,12 +76,14 @@ class MainWindow(QMainWindow):
         self.tab_widget = QTabWidget()
         self.normal_tab = QWidget()
         self.enhanced_tab = QWidget()
+        self.setting_tab = QWidget()
 
         self.layout_normal = QVBoxLayout(self.normal_tab)
 
         # 设置分页
         self.tab_widget.addTab(self.normal_tab, "普通模式")
         self.tab_widget.addTab(self.enhanced_tab, "增强模式")
+        self.tab_widget.addTab(self.setting_tab, "设置")
 
     def _load_component(self):
         # ------------------------------- 普通模式 start
@@ -106,21 +108,17 @@ class MainWindow(QMainWindow):
 
         # ------------------------------- 增强模式 start
         # 添加滚动区域
-        self.enhanced_scroll = QScrollArea()
+        self.layout_enhanced = QVBoxLayout()
         self.enhanced_content = QWidget()
-        self.layout_enhanced = QVBoxLayout(self.enhanced_content)
-        self.enhanced_scroll.setWidget(self.enhanced_content)
+        self.enhanced_scroll = QScrollArea()
         self.enhanced_scroll.setWidgetResizable(True)
-
-        # 创建一个布局来容纳滚动区域
-        enhanced_main_layout = QVBoxLayout(self.enhanced_tab)
-        enhanced_main_layout.addWidget(self.enhanced_scroll)
+        self.enhanced_main_layout = QVBoxLayout()
 
         self.forms_enhanced_mode = []
         for i in range(10):
             self.forms_enhanced_mode.append(
                 InputForm(
-                    f"评教项目 {i+1}：",
+                    f"评教项目 { i + 1 }：",
                     OPTION_LABELS,
                     default_option="yes",
                     form_type="choice",
@@ -128,7 +126,23 @@ class MainWindow(QMainWindow):
             )
         # ------------------------------- 增强模式 end
 
-        # 先设置无边框，再创建标题栏
+        # ------------------------------- 设置 start
+        # 设置布局
+        self.layout_setting = QVBoxLayout()
+        
+        # 添加标签显示
+        self.empty_label = QLabel("这里什么都没有...")
+        self.layout_setting.setAlignment(Qt.AlignCenter)  # 居中对齐
+        self.empty_label.setAlignment(Qt.AlignCenter)  # 文字居中
+        self.empty_label.setStyleSheet("""
+            QLabel {
+                font-size: 16px;
+                color: #666666;
+                padding: 20px;
+            }
+        """)
+        # ------------------------------- 设置 end
+
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.title_bar = TitleBarWidget()
 
@@ -149,10 +163,19 @@ class MainWindow(QMainWindow):
         # ------------------------------- 普通模式 end
 
         # ------------------------------- 增强模式 start
+        self.enhanced_content.setLayout(self.layout_enhanced)
+        self.enhanced_scroll.setWidget(self.enhanced_content)
+        self.enhanced_main_layout.addWidget(self.enhanced_scroll)
+        self.enhanced_tab.setLayout(self.enhanced_main_layout)
         for form in self.forms_enhanced_mode:
             self.layout_enhanced.addLayout(form)
             form.update_visibility()
         # ------------------------------- 增强模式 end
+
+        # ------------------------------- 设置 start
+        self.layout_setting.addWidget(self.empty_label)
+        self.setting_tab.setLayout(self.layout_setting)
+        # ------------------------------- 设置 end
 
         self.setWindowIcon(self._app_icon)
         self.main_layout.addWidget(self.title_bar)
@@ -168,10 +191,8 @@ class MainWindow(QMainWindow):
     def _script_start(self):
         """脚本开始"""
 
-        # 获取当前选中的分页
+        # 判断当前页是普通模式还是增强模式
         current_tab = self.tab_widget.currentWidget()
-
-        # 判断是普通模式还是增强模式
         if current_tab == self.normal_tab:
             self.console_output.append("当前模式: 普通模式")
         elif current_tab == self.enhanced_tab:
@@ -186,7 +207,7 @@ class MainWindow(QMainWindow):
         self.countdown = 3
         self.timer = QTimer()
         self.timer.timeout.connect(self._update_countdown)
-        self.timer.start(1000)  # 每1000毫秒（1秒）触发一次
+        self.timer.start(1000)
 
     def _update_countdown(self):
         """更新倒计时"""
@@ -229,3 +250,4 @@ class MainWindow(QMainWindow):
     def _script_stop(self):
         """脚本停止"""
         self.console_output.append("停止一键评教...")
+
