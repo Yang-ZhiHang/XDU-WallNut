@@ -5,7 +5,13 @@
 import os
 import sys
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTabWidget
+from PyQt5.QtWidgets import (
+    QMainWindow,
+    QWidget,
+    QVBoxLayout,
+    QTabWidget,
+)
+from PyQt5.QtCore import Qt
 
 try:
     sys.path.append(
@@ -21,6 +27,7 @@ try:
     from ui.widgets.start_button_widget import StartButton
     from utils.logger import Logger
     from ui.dialogs.message_dialog import MessageDialog
+    from ui.widgets.title_bar_widget import TitleBarWidget
     import resources.resources_rc
 except ImportError as e:
     Logger.error("main_window.py", "main_window", "ImportError: " + str(e), color="red")
@@ -45,6 +52,7 @@ class MainWindow(QMainWindow):
         # 应用组件
         self._apply_component()
 
+
     def _set_layout(self):
         """
         设置布局框架
@@ -63,13 +71,12 @@ class MainWindow(QMainWindow):
         self.tab_widget = QTabWidget()
         self.normal_tab = QWidget()
         self.enhanced_tab = QWidget()
-        self.normal_layout = QVBoxLayout(self.normal_tab)
-        self.enhanced_layout = QVBoxLayout(self.enhanced_tab)
+        self.layout_normal = QVBoxLayout(self.normal_tab)
+        self.layout_enhanced = QVBoxLayout(self.enhanced_tab)
 
         # 设置分页
         self.tab_widget.addTab(self.normal_tab, "普通模式")
         self.tab_widget.addTab(self.enhanced_tab, "增强模式")
-        self.main_layout.addWidget(self.tab_widget)
 
     def _load_component(self):
         # ------------------------------- 普通模式 start
@@ -85,6 +92,10 @@ class MainWindow(QMainWindow):
 
         # ------------------------------- 增强模式 end
 
+        # 先设置无边框，再创建标题栏
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.title_bar = TitleBarWidget()
+
         self._app_icon = QIcon(Icon.logo_ico_path)
         self.style_loader = StyleLoader("base.qss")
         self.web_loader = WebLoader()
@@ -92,11 +103,10 @@ class MainWindow(QMainWindow):
         self.console_output = ConsoleOutput()
 
     def _apply_component(self):
-        self.setWindowIcon(self._app_icon)
 
         # ------------------------------- 普通模式 start
-        self.normal_layout.addLayout(self.input_form_choices)
-        self.normal_layout.addLayout(self.input_form_text)
+        self.layout_normal.addLayout(self.input_form_choices)
+        self.layout_normal.addLayout(self.input_form_text)
         self.input_form_choices.update_visibility()
         self.input_form_text.update_visibility()
 
@@ -106,12 +116,15 @@ class MainWindow(QMainWindow):
 
         # ------------------------------- 增强模式 end
 
+        self.setWindowIcon(self._app_icon)
+        self.main_layout.addWidget(self.title_bar)
+        self.title_bar.min_button.clicked.connect(self.showMinimized)
+        self.title_bar.close_button.clicked.connect(self.close)
+        self.main_layout.addWidget(self.tab_widget)
+        self.main_layout.addWidget(self.start_button)
         self.start_button.started.connect(self._script_start)
         self.start_button.stopped.connect(self._script_stop)
-        self.main_layout.addWidget(self.start_button)
         self.main_layout.addWidget(self.console_output)
-
-        # 应用样式
         self.setStyleSheet(self.style_loader.load_style())
 
     def _script_start(self):
@@ -122,3 +135,4 @@ class MainWindow(QMainWindow):
     def _script_stop(self):
         """脚本停止"""
         self.console_output.append("停止一键评教...")
+
