@@ -14,7 +14,7 @@ class ConsoleOutput(QTextEdit):
         """
         初始化控制台输出设置
         """
-        
+
         # 设置只读
         self.setReadOnly(True)
 
