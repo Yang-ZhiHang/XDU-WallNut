@@ -15,8 +15,8 @@ class ConsoleOutput(QTextEdit):
         初始化控制台输出设置
         """
 
-        # 设置只读
         self.setReadOnly(True)
-
-        # 设置占位符文本
         self.setPlaceholderText("控制台输出将显示在这里...")
+
+        # 设置固定高度
+        self.setFixedHeight(150)
