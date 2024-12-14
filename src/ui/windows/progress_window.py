@@ -13,9 +13,10 @@ from core.services.update_checker import UpdateChecker
 
 try:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-    from core.services.file_donwloader import DownloadThread
+    from core.services.file_downloader import DownloadThread
     from utils.logger import Logger
     from core.configs.settings import Settings
+    from ui.widgets.title_bar_widget import TitleBarWidget
 except ImportError as e:
     Logger.error("updating_dialog.py", "updating_dialog", "ImportError: " + str(e))
 
@@ -52,8 +53,8 @@ class ProgressWindow(QMainWindow):
         # 状态标签
         self.status_label = QLabel("正在初始化...")
 
-        # 进度条
         self.progress_bar = QProgressBar()
+        self.title_bar = TitleBarWidget()
 
     def _set_component_style(self):
         # 窗口样式
@@ -103,6 +104,7 @@ class ProgressWindow(QMainWindow):
         self.setWindowFlags(Qt.FramelessWindowHint)  # 设置窗口无边框
 
     def _apply_components(self):
+        self.main_layout.addWidget(self.title_bar)
         self.main_layout.addWidget(self.status_label)
         self.main_layout.addWidget(self.progress_bar)
         self.central_widget.setLayout(self.main_layout)
