@@ -2,6 +2,7 @@
 该文件用于存放全局配置
 """
 
+import os
 
 class Settings:
     # 窗口相关
@@ -16,3 +17,16 @@ class Settings:
     # GITHUB_API = "https://github.com/Yang-ZhiHang/XDU-WallNut"
     GITHUB_API = "https://api.github.com/repos/Yang-ZhiHang/XDU-WallNut/releases/latest"
     GITHUB_EXE_URL = "https://github.com/Yang-ZhiHang/XDU-WallNut/releases/latest/download/XDU_WallNut.exe"
+
+    BASE_DIR = ""
+    @staticmethod
+    def get_base_dir():
+        """获取程序运行目录"""
+        import sys
+        if getattr(sys, 'frozen', False):
+            # 如果是打包后的可执行文件
+            BASE_DIR = os.path.dirname(sys.executable)
+        else:
+            # 如果是源码运行
+            BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        return BASE_DIR

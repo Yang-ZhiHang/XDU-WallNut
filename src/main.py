@@ -8,6 +8,9 @@ try:
     sys.path.append(current_dir)
     from ui.windows.main_window import MainWindow
     from utils.logger import Logger
+    from core.configs.settings import Settings
+    Settings.BASE_DIR = Settings.get_base_dir()
+    Logger.info("main.py", "main", f"BASE_DIR: {Settings.BASE_DIR}")
 except ImportError as e:
     Logger.error("main.py", "main", "ImportError: " + str(e))
 

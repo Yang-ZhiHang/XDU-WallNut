@@ -81,6 +81,17 @@ class UpdateChecker:
                     self._version_info["download_url"] = asset["browser_download_url"]
                     break
 
+            # 保存到临时文件
+            tmp_version_info = self._version_info.copy()
+            tmp_version_info["version"] = tmp_version_info["latest_version"]
+            tmp_version_info.pop("current_version")
+            try:
+                with open("version.tmp", "w", encoding="utf-8") as file:
+                    json.dump(tmp_version_info, file, ensure_ascii=False, indent=4)
+            except Exception as e:
+                self.error_message = f"保存临时版本信息失败: {str(e)}"
+                Logger.error("update_checker.py", "_get_latest_version", self.error_message)
+
         except Exception as e:
             self.error_message = f"获取最新版本信息失败: {str(e)}"
             Logger.error("update_checker.py", "_get_latest_version", self.error_message)
@@ -88,9 +99,17 @@ class UpdateChecker:
 
     def _load_current_version(self):
         """加载当前版本信息"""
-        version_file_path = "data/version.json"
-        if not os.path.exists(version_file_path):
-            version_file_path = "version.json"
+
+
+        version_file_path = Settings.BASE_DIR + "/data/version.json"
+        if not os.path.exists(Settings.BASE_DIR + "/data"):
+            # 获取程序路径
+            if getattr(sys, "frozen", False):
+                app_path = os.path.dirname(sys.executable)
+            else:
+                app_path = os.path.dirname(os.path.abspath(__file__))
+            Logger.info("update_checker.py", "_load_current_version", f"app_path: {app_path}")
+            version_file_path = Settings.BASE_DIR + "/version.json"
         try:
             with open(version_file_path, "r", encoding="utf-8") as file:
                 data = json.load(file)
@@ -101,22 +120,6 @@ class UpdateChecker:
                 "update_checker.py", "_load_current_version", self.error_message
             )
             self._version_info["current_version"] = "0.0.0"
-
-    def update_version_file(self):
-        """更新版本文件"""
-        try:
-            if not os.path.exists("data"):
-                os.makedirs("data", exist_ok=True)
-            with open("data/version.json", "w", encoding="utf-8") as file:
-                json.dump(self._version_info, file, ensure_ascii=False, indent=4)
-
-            Logger.info("update_checker.py", "update_version_file", "版本文件更新成功")
-            return True
-
-        except Exception as e:
-            self.error_message = f"更新版本文件失败: {str(e)}"
-            Logger.error("update_checker.py", "update_version_file", self.error_message)
-            return False
 
     @property
     def version_info(self):

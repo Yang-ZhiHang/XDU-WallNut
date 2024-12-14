@@ -69,8 +69,16 @@ class DownloadThread(QThread):
                     # 发送下载进度信号
                     self.progress_signal.emit(progress)
 
-                    # 发送状态信号
-                    self.status_signal.emit(f"下载中... {progress}%")
+                    # 根据进度显示不同的提示语
+                    progress_messages = [
+                        "正在偷偷下载更新...",
+                        "正在注入代码到嬉笑颠...",
+                        "正在拼装代码...",
+                        "正在充能...",
+                        "马上就好...",
+                    ]
+                    message_index = min(progress // 20, len(progress_messages) - 1)
+                    self.status_signal.emit(f"{progress_messages[message_index]}")
 
             # 下载完成后替换文件
             if os.path.exists(self.save_path):
