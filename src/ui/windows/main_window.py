@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QTimer
 import markdown
 
-from ui.windows.update_window import UpdateWindow
+from ui.windows.progress_window import ProgressWindow
 
 
 try:
@@ -264,14 +264,33 @@ class MainWindow(QMainWindow):
     def check_update(self):
         """检查更新"""
         need_update, msg = self.update_checker.check_update()
-        Logger.info("MainWindow", "check_update", f"need_update: {need_update}, msg: {msg}")
         if need_update:
             if not self.update_checker.error_message:
+                Logger.info(
+                    "MainWindow",
+                    "check_update",
+                    f"need_update: {need_update}, msg: {msg}",
+                )
                 self.console_output.append(msg)
-                if MessageDialog.show_update("更新提示", self.update_checker.version_info, "更新", "取消"):
-                    update_window = UpdateWindow()
-                    update_window.start_update()
+                if MessageDialog.show_update(
+                    "更新提示", self.update_checker.version_info, "更新", "取消"
+                ):
+                    # 用户选择更新，隐藏主窗口，防止挡住更新进度窗口
+                    self.hide()
+                    self.update_window = ProgressWindow()
+                    self.update_window.show()
+                    self.update_window.start_update()
+                else:
+                    # 用户取消更新,删除临时文件
+                    if os.path.exists("version.tmp"):
+                        os.remove("version.tmp")
             else:
+                Logger.error(
+                    "MainWindow",
+                    "check_update",
+                    f"error_message: {self.update_checker.error_message}",
+                )
                 self.console_output.append(self.update_checker.error_message)
         else:
+            Logger.error("MainWindow", "check_update", f"no need update, msg: {msg}")
             self.console_output.append(msg)
