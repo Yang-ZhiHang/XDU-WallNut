@@ -3,7 +3,12 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/stars/Yang-ZhiHang/XDU-WallNut" alt="Stars">
+  <img src="https://img.shields.io/github/stars/Yang-ZhiHang/XDU-WallNut" alt="Stars">&nbsp;
+  <img src="https://img.shields.io/github/downloads/Yang-ZhiHang/XDU-WallNut/total" alt="Downloads">&nbsp;
+  <img src="https://img.shields.io/github/v/release/Yang-ZhiHang/XDU-WallNut" alt="Version">&nbsp;
+  <img src="https://img.shields.io/github/last-commit/Yang-ZhiHang/XDU-WallNut" alt="Last Commit">&nbsp;
+  <img src="https://img.shields.io/github/repo-size/Yang-ZhiHang/XDU-WallNut" alt="Repo Size">
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
 </p>
 
 > ⚠️ 免责声明:
@@ -81,6 +86,19 @@
 
 [第四步] 提交！
 <img src='./assets/images/10.png'>
+
+
+
+## 📄 许可证
+
+本项目采用 [MIT License](LICENSE) 开源许可证。
+
+这意味着：
+- ✅ 你可以自由使用、修改和分发本代码
+- ✅ 允许用于商业用途
+- ✅ 你可以闭源使用
+- ❌ 作者不承担任何责任
+- ❌ 必须保留原始版权声明
 
 
 
