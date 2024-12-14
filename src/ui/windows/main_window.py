@@ -260,23 +260,17 @@ class MainWindow(QMainWindow):
 
     def check_update(self):
         """检查更新"""
-        if self.update_checker.check_update():
-            # 创建一个 QTextBrowser 来显示富文本
-            text_browser = QTextBrowser()
-            # 将 markdown 转换为 HTML
-            html_content = markdown.markdown(self.update_checker.version_info['release_notes'])
-            
-            # 构建完整的HTML消息
-            update_message = f"""检测到新版本 {self.update_checker.current_version} -> {self.update_checker.version_info['version']}
-            
-更新内容:
-{html_content}
-
-是否前往 Github 更新？"""
-            
-            text_browser.setHtml(update_message)
-            
-            if MessageDialog.show_info("更新提示", text_browser, "前往", "取消"):
-                self.web_loader.open_website(
-                    self.update_checker.version_info["release_url"]
-                )
+        need_update, msg = self.update_checker.check_update()
+        Logger.info("MainWindow", "check_update", f"need_update: {need_update}, msg: {msg}")
+        if need_update:
+            if not self.update_checker.error_message:
+                self.console_output.append(msg)
+                if MessageDialog.show_update("更新提示", self.update_checker.version_info, "更新", "取消"):
+                    self.web_loader.open_website(
+                        self.update_checker.version_info["release_url"],
+                        self.console_output
+                    )
+            else:
+                self.console_output.append(self.update_checker.error_message)
+        else:
+            self.console_output.append(msg)
