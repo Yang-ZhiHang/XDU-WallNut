@@ -150,7 +150,10 @@ class ProgressWindow(QMainWindow):
         """更新版本文件"""
         try:
             # 读取临时文件
-            with open("version.tmp", "r", encoding="utf-8") as file:
+            tmp_version_file_path = Settings.BASE_DIR + "/data/version.tmp"
+            if not os.path.exists(tmp_version_file_path):
+                tmp_version_file_path = Settings.BASE_DIR + "/version.tmp"
+            with open(tmp_version_file_path, "r", encoding="utf-8") as file:
                 version_info = json.load(file)
                 
             # 保存到正式文件
@@ -160,14 +163,14 @@ class ProgressWindow(QMainWindow):
                 json.dump(version_info, file, ensure_ascii=False, indent=4)
                 
             # 删除临时文件
-            os.remove("version.tmp")
+            os.remove(tmp_version_file_path)
             
-            Logger.info("update_checker.py", "update_version_file", "版本文件更新成功")
+            Logger.info("ProgressWindow", "update_version_file", "版本文件更新成功")
             return True
 
         except Exception as e:
             self.error_message = f"更新版本文件失败: {str(e)}"
-            Logger.error("update_checker.py", "update_version_file", self.error_message)
+            Logger.error("ProgressWindow", "update_version_file", self.error_message)
             return False
 
 
