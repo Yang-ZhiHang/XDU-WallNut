@@ -5,6 +5,14 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 import requests
 import os
+import sys
+
+try:
+    sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+    from utils.logger import Logger
+    from ui.dialogs.message_dialog import MessageDialog
+except ImportError as e:
+    Logger.error("file_downloader.py", "file_downloader", "ImportError: " + str(e))
 
 
 class DownloadThread(QThread):
@@ -91,15 +99,7 @@ class DownloadThread(QThread):
             # 发送完成信号
             self.finished_signal.emit(True)
 
-        except (
-            requests.exceptions.HTTPError
-            or requests.exceptions.ConnectionError
-            or requests.exceptions.Timeout
-            or requests.exceptions.RequestException
-            or requests.exceptions.SSLError
-        ):
-            self.status_signal.emit("下载失败，请检查网络")
-            self.finished_signal.emit(False)
         except Exception as e:
-            self.status_signal.emit(f"更新失败: {str(e)}")
+            self.status_signal.emit("更新失败，请检查网络")
+            MessageDialog.show_error("更新失败: {}".format(str(e)))
             self.finished_signal.emit(False)
