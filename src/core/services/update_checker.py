@@ -1,5 +1,5 @@
 """
-更新检查器
+该模块用于实现更新检查器
 """
 
 import sys
@@ -39,6 +39,9 @@ class UpdateChecker:
             bool: 是否需要更新
             str: 错误信息
         """
+        if self.version_info["current_version"] == "0.0.0":
+            return False, "当前版本获取失败"
+
         if self.version_info["current_version"] != self.version_info["latest_version"]:
             Logger.info(
                 "update_checker.py",
@@ -56,7 +59,7 @@ class UpdateChecker:
     def _get_latest_version(self):
         """获取最新版本信息"""
         try:
-            response = requests.get(Settings.UPDATE_URL)
+            response = requests.get(Settings.GITHUB_API)
             data = response.json()
 
             self._version_info.update(
@@ -65,7 +68,9 @@ class UpdateChecker:
                         "v", ""
                     ),  # 移除版本号前的'v'
                     "release_url": data["html_url"],
-                    "release_date": data["published_at"],
+                    "author": data["author"]["login"],
+                    "name": data["name"],
+                    "published_at": data["published_at"],
                     "release_notes": data["body"],
                 }
             )
@@ -83,8 +88,11 @@ class UpdateChecker:
 
     def _load_current_version(self):
         """加载当前版本信息"""
+        version_file_path = "data/version.json"
+        if not os.path.exists(version_file_path):
+            version_file_path = "version.json"
         try:
-            with open("data/version.json", "r", encoding="utf-8") as file:
+            with open(version_file_path, "r", encoding="utf-8") as file:
                 data = json.load(file)
                 self._version_info["current_version"] = data["version"]
         except Exception as e:
@@ -97,6 +105,8 @@ class UpdateChecker:
     def update_version_file(self):
         """更新版本文件"""
         try:
+            if not os.path.exists("data"):
+                os.makedirs("data", exist_ok=True)
             with open("data/version.json", "w", encoding="utf-8") as file:
                 json.dump(self._version_info, file, ensure_ascii=False, indent=4)
 

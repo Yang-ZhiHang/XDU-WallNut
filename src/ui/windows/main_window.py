@@ -17,6 +17,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QTimer
 import markdown
 
+from ui.windows.update_window import UpdateWindow
+
 
 try:
     sys.path.append(
@@ -53,7 +55,7 @@ class MainWindow(QMainWindow):
         self.setAttribute(Qt.WA_TranslucentBackground)
 
         # 设置布局框架
-        self._set_layout()
+        self._set_main_layout()
 
         # 加载组件
         self._load_component()
@@ -61,7 +63,7 @@ class MainWindow(QMainWindow):
         # 应用组件
         self._apply_component()
 
-    def _set_layout(self):
+    def _set_main_layout(self):
         """
         设置布局框架
 
@@ -70,10 +72,9 @@ class MainWindow(QMainWindow):
             - 增强模式布局
         """
 
-        # 创建中心部件并创建主布局
+        # 创建中心部件和主布局(中心部件包含主布局)
+        self.main_layout = QVBoxLayout()
         self.central_widget = QWidget()
-        self.setCentralWidget(self.central_widget)
-        self.main_layout = QVBoxLayout(self.central_widget)
 
         # 创建分页
         self.tab_widget = QTabWidget()
@@ -194,6 +195,8 @@ class MainWindow(QMainWindow):
         self.start_button.stopped.connect(self._script_stop)
         self.main_layout.addWidget(self.console_output)
         self.setStyleSheet(self.style_loader.load_style())
+        self.central_widget.setLayout(self.main_layout)
+        self.setCentralWidget(self.central_widget)
 
     def _script_start(self):
         """脚本开始"""
@@ -266,10 +269,8 @@ class MainWindow(QMainWindow):
             if not self.update_checker.error_message:
                 self.console_output.append(msg)
                 if MessageDialog.show_update("更新提示", self.update_checker.version_info, "更新", "取消"):
-                    self.web_loader.open_website(
-                        self.update_checker.version_info["release_url"],
-                        self.console_output
-                    )
+                    update_window = UpdateWindow()
+                    update_window.start_update()
             else:
                 self.console_output.append(self.update_checker.error_message)
         else:
