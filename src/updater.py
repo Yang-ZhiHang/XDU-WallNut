@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QApplication
 try:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     sys.path.append(current_dir)
-    from ui.windows.main_window import MainWindow
+    from ui.windows.progress_window import ProgressWindow
     from utils.logger import Logger
     from core.configs.settings import Settings
     Settings.BASE_DIR = Settings.get_base_dir()
@@ -17,9 +17,9 @@ except ImportError as e:
 
 def main():
     app = QApplication(sys.argv)
-    window = MainWindow()
-    window.check_update()
-    # window.web_loader.open_website("https://ehall.xidian.edu.cn/jwapp/sys/wspjyyapp/*default/index.do", window.console_output)
+    window = ProgressWindow()
+    window.show()
+    window.start_update()
     sys.exit(app.exec_())
 
 

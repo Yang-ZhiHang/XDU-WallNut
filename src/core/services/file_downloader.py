@@ -101,5 +101,5 @@ class DownloadThread(QThread):
 
         except Exception as e:
             self.status_signal.emit("更新失败，请检查网络")
-            MessageDialog.show_error("更新失败: {}".format(str(e)))
+            MessageDialog.show_error("出错啦", "更新失败: {}".format(str(e)))
             self.finished_signal.emit(False)

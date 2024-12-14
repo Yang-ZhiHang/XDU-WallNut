@@ -105,10 +105,56 @@ class ProgressWindow(QMainWindow):
 
     def _apply_components(self):
         self.main_layout.addWidget(self.title_bar)
+        self.title_bar.min_button.clicked.connect(self.showMinimized)
+        self.title_bar.close_button.clicked.connect(self.close)
         self.main_layout.addWidget(self.status_label)
         self.main_layout.addWidget(self.progress_bar)
         self.central_widget.setLayout(self.main_layout)
         self.setCentralWidget(self.central_widget)
+
+    def closeEvent(self, event):
+        """重写关闭事件，删除临时文件"""
+        Logger.info("ProgressWindow", "closeEvent", "Handle close event.", color="white")
+        event.accept()
+
+        # 如果下载线程存在且正在运行，则停止它
+        if hasattr(self, 'download_thread') and self.download_thread.isRunning():
+            Logger.info("ProgressWindow", "closeEvent", "DownloadThread is running, trying to terminate...")
+            self.download_thread.terminate()
+            self.download_thread.wait()
+            Logger.info("ProgressWindow", "closeEvent", "DownloadThread has been terminated")
+
+        try:
+            # 获取程序路径
+            if getattr(sys, "frozen", False):
+                # 如果是打包后的 exe
+                app_path = os.path.dirname(sys.executable)
+            else:
+                # 如果是开发环境
+                app_path = os.path.dirname(os.path.abspath(__file__))
+
+            # 删除临时版本文件
+            tmp_version_file_path = os.path.join(app_path, "data/version.tmp")
+            if not os.path.exists(tmp_version_file_path):
+                tmp_version_file_path = os.path.join(app_path, "version.tmp")
+
+            if os.path.exists(tmp_version_file_path):
+                os.remove(tmp_version_file_path)
+                Logger.info("ProgressWindow", "closeEvent", f"Temporary file {tmp_version_file_path} deleted successfully.")
+            else:
+                Logger.info("ProgressWindow", "closeEvent", f"Temporary file {tmp_version_file_path} does not exist.")
+
+            # 删除未下载完的更新包
+            exe_path = os.path.join(app_path, Settings.APP_NAME + ".exe.tmp")
+            Logger.info("ProgressWindow", "closeEvent", f"Delete file: {exe_path}")
+            if os.path.exists(exe_path):
+                os.remove(exe_path)
+                Logger.info("ProgressWindow", "closeEvent", "Update package deleted successfully.")
+
+        except Exception as e:
+            Logger.error("ProgressWindow", "closeEvent", f"Failed to delete temporary files: {str(e)}")
+            
+        Logger.info("ProgressWindow", "closeEvent", "Close event handled.")
 
     def start_update(self):
         # 获取程序路径
@@ -117,7 +163,7 @@ class ProgressWindow(QMainWindow):
         else:
             app_path = os.path.dirname(os.path.abspath(__file__))
 
-        exe_path = os.path.join(app_path, "XDU_WallNut.exe")
+        exe_path = os.path.join(app_path, Settings.APP_NAME + ".exe")
 
         # 创建下载线程
         self.download_thread = DownloadThread(
@@ -143,10 +189,12 @@ class ProgressWindow(QMainWindow):
             self.update_version_file()
 
             # 重启主程序
-            os.startfile("XDU_WallNut.exe")
+            os.startfile(Settings.APP_NAME + ".exe")
 
             # 关闭更新器
             sys.exit()
+        else:
+            self.close()
 
     def update_version_file(self):
         """更新版本文件"""
