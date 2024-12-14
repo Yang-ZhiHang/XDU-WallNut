@@ -57,7 +57,6 @@ class UpdateChecker:
         )
 
     def _get_latest_version(self):
-        """获取最新版本信息"""
         try:
             response = requests.get(Settings.GITHUB_API)
             data = response.json()
@@ -85,12 +84,17 @@ class UpdateChecker:
             tmp_version_info = self._version_info.copy()
             tmp_version_info["version"] = tmp_version_info["latest_version"]
             tmp_version_info.pop("current_version")
+            tmp_version_file_path = Settings.BASE_DIR + "/data/version.tmp"
+            if not os.path.exists(Settings.BASE_DIR + "/data"):
+                tmp_version_file_path = Settings.BASE_DIR + "/version.tmp"
             try:
-                with open("version.tmp", "w", encoding="utf-8") as file:
+                with open(tmp_version_file_path, "w", encoding="utf-8") as file:
                     json.dump(tmp_version_info, file, ensure_ascii=False, indent=4)
             except Exception as e:
                 self.error_message = f"保存临时版本信息失败: {str(e)}"
-                Logger.error("update_checker.py", "_get_latest_version", self.error_message)
+                Logger.error(
+                    "update_checker.py", "_get_latest_version", self.error_message
+                )
 
         except Exception as e:
             self.error_message = f"获取最新版本信息失败: {str(e)}"
@@ -98,9 +102,6 @@ class UpdateChecker:
             self._version_info["latest_version"] = "0.0.0"
 
     def _load_current_version(self):
-        """加载当前版本信息"""
-
-
         version_file_path = Settings.BASE_DIR + "/data/version.json"
         if not os.path.exists(Settings.BASE_DIR + "/data"):
             # 获取程序路径
@@ -108,7 +109,9 @@ class UpdateChecker:
                 app_path = os.path.dirname(sys.executable)
             else:
                 app_path = os.path.dirname(os.path.abspath(__file__))
-            Logger.info("update_checker.py", "_load_current_version", f"app_path: {app_path}")
+            Logger.info(
+                "update_checker.py", "_load_current_version", f"app_path: {app_path}"
+            )
             version_file_path = Settings.BASE_DIR + "/version.json"
         try:
             with open(version_file_path, "r", encoding="utf-8") as file:
@@ -123,5 +126,4 @@ class UpdateChecker:
 
     @property
     def version_info(self):
-        """获取版本信息"""
         return self._version_info

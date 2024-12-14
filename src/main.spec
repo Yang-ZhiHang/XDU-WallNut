@@ -4,25 +4,29 @@ block_cipher = None
 
 a = Analysis(
     [
-        'main.py',
-        'D:/dev/XDU_WallNut/src/main/ui/__init__.py',
-        'D:/dev/XDU_WallNut/src/main/ui/base_window.py',
-        'D:/dev/XDU_WallNut/src/main/ui/components/console_section.py',
-        'D:/dev/XDU_WallNut/src/main/ui/components/input_section.py',
-        'D:/dev/XDU_WallNut/src/main/ui/components/console_section.py',
-        'D:/dev/XDU_WallNut/src/main/utils/__init__.py',
-        'D:/dev/XDU_WallNut/src/main/utils/browser_utils.py',
-        'D:/dev/XDU_WallNut/src/main/utils/config_handler.py',
-        'D:/dev/XDU_WallNut/src/main/utils/style_handler.py',
-        'D:/dev/XDU_WallNut/src/main/utils/version_checker.py',
-        'D:/dev/XDU_WallNut/src/main/utils/updater.py',
+        'D:/code/dev/XDU_WallNut/src/main.py',
+        'D:/code/dev/XDU_WallNut/src/core/configs/constants.py',
+        'D:/code/dev/XDU_WallNut/src/core/configs/settings.py',
+        'D:/code/dev/XDU_WallNut/src/core/loaders/style_loader.py',
+        'D:/code/dev/XDU_WallNut/src/core/loaders/web_loader.py',
+        'D:/code/dev/XDU_WallNut/src/core/services/evaluator.py',
+        'D:/code/dev/XDU_WallNut/src/core/services/file_downloader.py',
+        'D:/code/dev/XDU_WallNut/src/core/icons.py',
+        'D:/code/dev/XDU_WallNut/src/resources/resources_rc.py',
+        'D:/code/dev/XDU_WallNut/src/ui/dialogs/message_dialog.py',
+        'D:/code/dev/XDU_WallNut/src/ui/widgets/console_widget.py',
+        'D:/code/dev/XDU_WallNut/src/ui/widgets/input_form_widget.py',
+        'D:/code/dev/XDU_WallNut/src/ui/widgets/start_button_widget.py',
+        'D:/code/dev/XDU_WallNut/src/ui/widgets/title_bar_widget.py',
+        'D:/code/dev/XDU_WallNut/src/ui/windows/main_window.py',
+        'D:/code/dev/XDU_WallNut/src/ui/windows/progress_window.py',
+        'D:/code/dev/XDU_WallNut/src/utils/logger.py',
     ],  # 此项目中所有的 python 脚本
-    pathex=['D:\\dev\\XDU_WallNut\\src\\main'],  # 项目绝对路径
+    pathex=['D:/code/dev/XDU_WallNut/src/main'],  # 项目绝对路径
     binaries=[],
     datas=[
-        ('styles/base.qss', 'styles'),
-        ('favicon.ico', '.'),
-        ('version.json', '.')
+        ('ui/styles/base.qss', 'styles'),
+        ('data/version.json', '.')
     ],
     hiddenimports=[],
     hookspath=[],
@@ -53,7 +57,7 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    icon='D:/dev/XDU_WallNut/src/main/favicon.ico',  # 图标路径
+    icon='D:/code/dev/XDU_WallNut/src/resources/icons/logo.png',  # 图标路径
     console=False ,
-    distpath='D:/dev/XDU_WallNut/dist',  # 打包输出路径
+    distpath='D:/code/dev/XDU_WallNut/dist',  # 打包输出路径
 )
