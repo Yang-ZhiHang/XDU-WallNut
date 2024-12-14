@@ -275,11 +275,14 @@ class MainWindow(QMainWindow):
                 if MessageDialog.show_update(
                     "更新提示", self.update_checker.version_info, "更新", "取消"
                 ):
-                    # 用户选择更新，隐藏主窗口，防止挡住更新进度窗口
-                    self.hide()
-                    self.update_window = ProgressWindow()
-                    self.update_window.show()
-                    self.update_window.start_update()
+                    # 用户选择更新，启动更新程序并退出当前程序
+                    updater_path = os.path.join(Settings.BASE_DIR, "updater.exe")
+                    if os.path.exists(updater_path):
+                        os.startfile(updater_path)
+                        sys.exit()
+                    else:
+                        self.console_output.append("更新程序不存在.")
+                        self.show()
                 else:
                     # 用户取消更新,删除临时文件
                     if os.path.exists("version.tmp"):
@@ -294,3 +297,6 @@ class MainWindow(QMainWindow):
         else:
             Logger.error("MainWindow", "check_update", f"no need update, msg: {msg}")
             self.console_output.append(msg)
+        
+        # 显示窗口
+        self.show()

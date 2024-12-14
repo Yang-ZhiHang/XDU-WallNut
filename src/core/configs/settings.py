@@ -5,6 +5,10 @@
 import os
 
 class Settings:
+
+    # 应用相关
+    APP_NAME = "XDU_WallNut"
+
     # 窗口相关
     WINDOW_TITLE = "XDU一键评教"
     WINDOW_SIZE = (400, 600)

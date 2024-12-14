@@ -4,28 +4,19 @@ block_cipher = None
 
 a = Analysis(
     [
-        'D:/code/dev/XDU-WallNut/src/main.py',
-        'D:/code/dev/XDU-WallNut/src/core/configs/constants.py',
+        'D:/code/dev/XDU-WallNut/src/updater.py',
         'D:/code/dev/XDU-WallNut/src/core/configs/settings.py',
-        'D:/code/dev/XDU-WallNut/src/core/loaders/style_loader.py',
-        'D:/code/dev/XDU-WallNut/src/core/loaders/web_loader.py',
-        'D:/code/dev/XDU-WallNut/src/core/services/evaluator.py',
         'D:/code/dev/XDU-WallNut/src/core/services/file_downloader.py',
         'D:/code/dev/XDU-WallNut/src/core/icons.py',
         'D:/code/dev/XDU-WallNut/src/resources/resources_rc.py',
         'D:/code/dev/XDU-WallNut/src/ui/dialogs/message_dialog.py',
-        'D:/code/dev/XDU-WallNut/src/ui/widgets/console_widget.py',
-        'D:/code/dev/XDU-WallNut/src/ui/widgets/input_form_widget.py',
-        'D:/code/dev/XDU-WallNut/src/ui/widgets/start_button_widget.py',
         'D:/code/dev/XDU-WallNut/src/ui/widgets/title_bar_widget.py',
-        'D:/code/dev/XDU-WallNut/src/ui/windows/main_window.py',
         'D:/code/dev/XDU-WallNut/src/ui/windows/progress_window.py',
         'D:/code/dev/XDU-WallNut/src/utils/logger.py',
     ],  # 此项目中所有的 python 脚本
     pathex=['D:/code/dev/XDU-WallNut/src'],  # 项目绝对路径
     binaries=[],
     datas=[
-        ('ui/styles/base.qss', 'ui/styles'),  # (源文件, 目标文件夹)
         ('data/version.json', 'data')
     ],
     hiddenimports=[],
@@ -50,14 +41,14 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='XDU_WallNut',  # 打包程序的名字
+    name='updater',  # 打包程序的名字
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    icon='D:/code/dev/XDU-WallNut/src/resources/favicon.ico',  # 图标路径
+    icon='D:/code/dev/XDU-WallNut/src/resources/updater.ico',  # 图标路径
     console=False ,
     distpath='D:\\code\\dev\\XDU-WallNut\\dist',  # 打包输出路径
 )

@@ -28,3 +28,9 @@ src/
 ## 3.配置集中管理
 
 ## 4.业务逻辑分离
+
+## 5.打包
+
+```bash
+pyinstaller main.spec --distpath "D:/code/dev/XDU-WallNut/dist"
+```
