@@ -1,36 +1,31 @@
-# 测试
-
-此处进行项目重构
-
-## 1.重构项目结构
+## 项目结构
 
 ```bash
 src/
-├── core/                  # 核心业务逻辑
-│   ├── config/            # 配置相关
-│   │   ├── settings.py    # 全局配置
-│   │   └── constants.py   # 常量定义
-│   └── services/          # 业务服务
-│       └── evaluator.py   # 评教服务
-├── ui/                    # UI 相关
-│   ├── windows/           # 窗口
-│   │   └── main_window.py 
-│   ├── widgets/           # 可复用组件
-│   │   ├── input_form.py 
-│   │   └── console.py 
-│   └── styles/            # 样式文件
-├── utils/                 # 工具类
-└── main.py                # 入口文件
+├── core/                          # 核心业务逻辑
+│   ├── config/                    # 配置相关
+│   ├── loader/                    # 加载器
+│   ├── services/                  # 业务逻辑
+│   └── icons.py                   # 图标配置
+├── data/                          # 版本信息
+├── resources/                     # 资源文件
+├── ui/                            # UI 相关
+│   ├── dialogs/                   # 对话框
+│   ├── styles/                    # 样式
+│   ├── widgets/                   # 可复用组件
+│   └── windows/                   # 窗口
+├── utils/                         # 通用工具
+├── main.py                        # 主程序
+├── main.spec                      # 主程序打包配置
+├── updater.py                     # 更新模块
+└── updater.spec                   # 更新模块打包配置
 ```
 
-## 2.重构代码（组件模块化）
-
-## 3.配置集中管理
-
-## 4.业务逻辑分离
-
-## 5.打包
+## 打包
 
 ```bash
+# 主程序
 pyinstaller main.spec --distpath "D:/code/dev/XDU-WallNut/dist"
+# 更新模块
+pyinstaller updater.spec --distpath "D:/code/dev/XDU-WallNut/dist"
 ```
