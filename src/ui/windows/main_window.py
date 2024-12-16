@@ -12,12 +12,8 @@ from PyQt5.QtWidgets import (
     QTabWidget,
     QScrollArea,
     QLabel,
-    QTextBrowser,
 )
 from PyQt5.QtCore import Qt, QTimer
-import markdown
-
-from ui.windows.progress_window import ProgressWindow
 
 
 try:
@@ -150,14 +146,14 @@ class MainWindow(QMainWindow):
         # ------------------------------- 设置 end
 
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.title_bar = TitleBarWidget()
+        self.web_loader = WebLoader()
+        self.console_output = ConsoleOutput()
+        self.title_bar = TitleBarWidget(web_loader=self.web_loader, console_output=self.console_output)
 
         self._app_icon = QIcon(Icon.logo_ico_path)
         self.start_button = StartButton()
-        self.console_output = ConsoleOutput()
 
         self.style_loader = StyleLoader("base.qss")
-        self.web_loader = WebLoader()
         self.update_checker = UpdateChecker()
 
     def _apply_component(self):

@@ -18,8 +18,8 @@ except ImportError as e:
 def main():
     app = QApplication(sys.argv)
     window = MainWindow()
-    window.check_update()
     window.web_loader.open_website("https://ehall.xidian.edu.cn/jwapp/sys/wspjyyapp/*default/index.do", window.console_output)
+    window.check_update()
     sys.exit(app.exec_())
 
 

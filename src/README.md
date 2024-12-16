@@ -21,6 +21,12 @@ src/
 └── updater.spec                   # 更新模块打包配置
 ```
 
+## 编译资源模块
+
+```bash
+pyrcc5 resources.qrc -o resources_rc.py
+```
+
 ## 打包
 
 ```bash

@@ -15,6 +15,7 @@ try:
     from utils.logger import Logger
     from core.configs.settings import Settings
     from core.icons import Icon
+    from core.loaders import web_loader
 except ImportError as e:
     Logger.error(
         "title_bar_widget.py", "title_bar_widget", "ImportError: " + str(e), color="red"
@@ -22,13 +23,15 @@ except ImportError as e:
 
 
 class TitleBarWidget(QWidget):
-    def __init__(self):
+    def __init__(self, web_loader=None, console_output=None):
         super().__init__()
-
+        self.default_icon = QIcon(Icon.logo_ico_path)
+        self.hover_icon = QIcon(Icon.github_ico_path)
+        self.github_url = Settings.GITHUB_APP_PAGE_URL
+        self.web_loader = web_loader
+        self.console_output = console_output
         self._init_component()
-
         self._set_component_style()
-
         self._apply_component()
 
     def _init_component(self):
@@ -36,10 +39,17 @@ class TitleBarWidget(QWidget):
         self.title_bar = QHBoxLayout()
 
         self.icon_label = QLabel()
-        icon_size = (30, 30)
-        self.icon_label.setFixedSize(*icon_size)
-        icon_pixmap = QIcon(Icon.logo_ico_path).pixmap(*icon_size)
+        self.icon_size = (30, 30)
+        self.icon_label.setFixedSize(*self.icon_size)
+        icon_pixmap = self.default_icon.pixmap(*self.icon_size)
         self.icon_label.setPixmap(icon_pixmap)
+
+        # 设置鼠标悬停时为手型
+        self.icon_label.setCursor(Qt.PointingHandCursor)
+
+        # QLabel 接收鼠标点击事件
+        self.icon_label.setMouseTracking(True)
+        self.icon_label.mousePressEvent = self.icon_clicked
 
         self.title_label = QLabel(Settings.WINDOW_TITLE)
         self.min_button = QPushButton("－")
@@ -131,3 +141,18 @@ class TitleBarWidget(QWidget):
             self.window().move(self.window_position + delta)
 
     # ------------------------------- 窗口拖动 end
+
+    # 添加鼠标进入事件处理
+    def enterEvent(self, event):
+        hover_pixmap = self.hover_icon.pixmap(*self.icon_size)
+        self.icon_label.setPixmap(hover_pixmap)
+
+    # 添加鼠标离开事件处理
+    def leaveEvent(self, event):
+        default_pixmap = self.default_icon.pixmap(*self.icon_size)
+        self.icon_label.setPixmap(default_pixmap)
+
+    def icon_clicked(self, event):
+        Logger.info("title_bar_widget.py", "icon_clicked", "icon clicked")
+        if event.button() == Qt.LeftButton and self.web_loader:
+            self.web_loader.open_website(self.github_url, self.console_output)

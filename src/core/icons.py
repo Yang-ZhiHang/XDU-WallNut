@@ -7,3 +7,4 @@ class Icon:
     info_ico_path = ":/icons/info.png"
     warning_ico_path = ":/icons/warning.png"
     error_ico_path = ":/icons/error.png"
+    github_ico_path = ":/icons/github.png"
