@@ -15,7 +15,6 @@ try:
     from utils.logger import Logger
     from core.configs.settings import Settings
     from core.icons import Icon
-    from core.loaders import web_loader
 except ImportError as e:
     Logger.error(
         "title_bar_widget.py", "title_bar_widget", "ImportError: " + str(e), color="red"
@@ -36,7 +35,10 @@ class TitleBarWidget(QWidget):
 
     def _init_component(self):
 
+        # 创建一个容器 widget 来包含所有组件：以便于设置完美的 QSS 样式
+        self.container = QWidget()
         self.title_bar = QHBoxLayout()
+        self.main_layout = QHBoxLayout()
 
         self.icon_label = QLabel()
         self.icon_size = (30, 30)
@@ -58,25 +60,31 @@ class TitleBarWidget(QWidget):
         self.min_button.setFixedSize(30, 30)
         self.close_button.setFixedSize(30, 30)
 
-        self.title_bar.setContentsMargins(0, 0, 0, 0)
-        self.title_bar.setSpacing(0)
-        self.title_bar.addWidget(self.icon_label)
-        self.title_bar.addWidget(self.title_label)
-        self.title_bar.addWidget(self.min_button)
-        self.title_bar.addWidget(self.close_button)
 
     def _set_component_style(self):
-
-        # 设置样式
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        # 设置外层窗口样式
         self.setStyleSheet(
+            """
+            QWidget {
+                background-color: transparent;
+            }
+            """
+        )
+        
+        # 设置内部容器样式
+        self.container.setStyleSheet(
             """
             QWidget {
                 background-color: #1e1e1e;
                 border-top-left-radius: 8px;
                 border-top-right-radius: 8px;
             }
-        """
+            """
         )
+
+        self.title_bar.setContentsMargins(0, 0, 0, 0)
+        self.title_bar.setSpacing(0)
 
         # 设置按钮样式
         button_style = """
@@ -126,8 +134,14 @@ class TitleBarWidget(QWidget):
         """
         )
 
-    def _apply_component(self):
-        self.setLayout(self.title_bar)
+    def _apply_component(self):        
+        self.title_bar.addWidget(self.icon_label)
+        self.title_bar.addWidget(self.title_label)
+        self.title_bar.addWidget(self.min_button)
+        self.title_bar.addWidget(self.close_button)
+        self.container.setLayout(self.title_bar)
+        self.main_layout.addWidget(self.container)
+        self.setLayout(self.main_layout)
 
     # ------------------------------- 窗口拖动 start
     def mousePressEvent(self, event):

@@ -86,6 +86,7 @@ class UpdateChecker:
             tmp_version_info = self._version_info.copy()
             tmp_version_info["version"] = tmp_version_info["latest_version"]
             tmp_version_info.pop("current_version")
+            tmp_version_info.pop("latest_version")
             tmp_version_file_path = Settings.BASE_DIR + "/data/version.tmp"
             if not os.path.exists(Settings.BASE_DIR + "/data"):
                 tmp_version_file_path = Settings.BASE_DIR + "/version.tmp"

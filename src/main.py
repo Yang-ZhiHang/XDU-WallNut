@@ -9,6 +9,7 @@ try:
     from ui.windows.main_window import MainWindow
     from utils.logger import Logger
     from core.configs.settings import Settings
+
     Settings.BASE_DIR = Settings.get_base_dir()
     Logger.info("main.py", "main", f"BASE_DIR: {Settings.BASE_DIR}")
 except ImportError as e:
@@ -18,8 +19,9 @@ except ImportError as e:
 def main():
     app = QApplication(sys.argv)
     window = MainWindow()
-    window.web_loader.open_website("https://ehall.xidian.edu.cn/jwapp/sys/wspjyyapp/*default/index.do", window.console_output)
-    window.check_update()
+    # window.web_loader.open_website("https://ehall.xidian.edu.cn/jwapp/sys/wspjyyapp/*default/index.do", window.console_output)
+    # window.check_update()
+    window.show()
     sys.exit(app.exec_())
 
 

@@ -3,9 +3,9 @@
 """
 
 import json
-from PyQt5.QtWidgets import QMainWindow, QProgressBar, QLabel, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QMainWindow, QApplication, QProgressBar, QLabel, QVBoxLayout, QWidget
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtGui import QIcon
 import os
 import sys
 
@@ -16,6 +16,7 @@ try:
     from core.configs.settings import Settings
     from utils.file import get_app_path
     from ui.widgets.title_bar_widget import TitleBarWidget
+    from core.icons import Icon
 except ImportError as e:
     Logger.error("updating_dialog.py", "updating_dialog", "ImportError: " + str(e))
 
@@ -48,6 +49,7 @@ class ProgressWindow(QMainWindow):
          | ///////////// 50%(progress bar) ///           |
          | --------------------------------------------- |
         """
+        self._app_icon = QIcon(Icon.update_ico_path)
 
         # 状态标签
         self.status_label = QLabel("正在初始化...")
@@ -103,6 +105,7 @@ class ProgressWindow(QMainWindow):
         self.setWindowFlags(Qt.FramelessWindowHint)  # 设置窗口无边框
 
     def _apply_components(self):
+        self.setWindowIcon(self._app_icon)
         self.main_layout.addWidget(self.title_bar)
         self.title_bar.min_button.clicked.connect(self.showMinimized)
         self.title_bar.close_button.clicked.connect(self.close)

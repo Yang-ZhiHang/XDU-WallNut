@@ -51,14 +51,10 @@ class MainWindow(QMainWindow):
         self.setWindowFlags(Qt.Window)
         self.setAttribute(Qt.WA_TranslucentBackground)
 
-        # 设置布局框架
         self._set_main_layout()
-
-        # 加载组件
-        self._load_component()
-
-        # 应用组件
-        self._apply_component()
+        self._load_components()
+        self._set_component_style()
+        self._apply_components()
 
     def _set_main_layout(self):
         """
@@ -86,7 +82,7 @@ class MainWindow(QMainWindow):
         self.tab_widget.addTab(self.enhanced_tab, "增强模式")
         self.tab_widget.addTab(self.setting_tab, "设置")
 
-    def _load_component(self):
+    def _load_components(self):
         # ------------------------------- 普通模式 start
         self.forms_normal_mode = []
         self.forms_normal_mode.append(
@@ -128,22 +124,9 @@ class MainWindow(QMainWindow):
         # ------------------------------- 增强模式 end
 
         # ------------------------------- 设置 start
-        # 设置布局
         self.layout_setting = QVBoxLayout()
 
-        # 添加标签显示
         self.empty_label = QLabel("这里什么都没有...")
-        self.layout_setting.setAlignment(Qt.AlignCenter)  # 居中对齐
-        self.empty_label.setAlignment(Qt.AlignCenter)  # 文字居中
-        self.empty_label.setStyleSheet(
-            """
-            QLabel {
-                font-size: 16px;
-                color: #666666;
-                padding: 20px;
-            }
-        """
-        )
         # ------------------------------- 设置 end
 
         self.setWindowFlags(Qt.FramelessWindowHint)
@@ -157,7 +140,23 @@ class MainWindow(QMainWindow):
         self.style_loader = StyleLoader("base.qss")
         self.update_checker = UpdateChecker()
 
-    def _apply_component(self):
+    def _set_component_style(self):
+
+        # -------------------------------------- 设置 start
+        self.layout_setting.setAlignment(Qt.AlignCenter)  # 居中对齐
+        self.empty_label.setAlignment(Qt.AlignCenter)  # 文字居中
+        self.empty_label.setStyleSheet(
+            """
+            QLabel {
+                font-size: 16px;
+                color: #666666;
+                padding: 20px;
+            }
+        """
+        )
+        # -------------------------------------- 设置 end
+
+    def _apply_components(self):
 
         # ------------------------------- 普通模式 start
         self.layout_normal.addLayout(self.forms_normal_mode[0])

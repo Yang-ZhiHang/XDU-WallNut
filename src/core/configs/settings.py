@@ -19,7 +19,6 @@ class Settings:
     UPDATE_WINDOW_SIZE = (800, 150)
 
     # 更新相关
-    # GITHUB_API = "https://github.com/Yang-ZhiHang/XDU-WallNut"
     GITHUB_APP_PAGE_URL = "https://github.com/Yang-ZhiHang/XDU-WallNut"
     GITHUB_API = "https://api.github.com/repos/Yang-ZhiHang/XDU-WallNut/releases/latest"
     GITHUB_EXE_URL = "https://github.com/Yang-ZhiHang/XDU-WallNut/releases/latest/download/XDU_WallNut.exe"
