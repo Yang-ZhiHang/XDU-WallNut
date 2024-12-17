@@ -9,13 +9,12 @@ from PyQt5.QtWidgets import QApplication
 import os
 import sys
 
-from core.services.update_checker import UpdateChecker
-
 try:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
     from core.services.file_downloader import DownloadThread
     from utils.logger import Logger
     from core.configs.settings import Settings
+    from utils.file import get_app_path
     from ui.widgets.title_bar_widget import TitleBarWidget
 except ImportError as e:
     Logger.error("updating_dialog.py", "updating_dialog", "ImportError: " + str(e))
@@ -114,24 +113,27 @@ class ProgressWindow(QMainWindow):
 
     def closeEvent(self, event):
         """重写关闭事件，删除临时文件"""
-        Logger.info("ProgressWindow", "closeEvent", "Handle close event.", color="white")
+        Logger.info(
+            "ProgressWindow", "closeEvent", "Handle close event.", color="white"
+        )
         event.accept()
 
         # 如果下载线程存在且正在运行，则停止它
-        if hasattr(self, 'download_thread') and self.download_thread.isRunning():
-            Logger.info("ProgressWindow", "closeEvent", "DownloadThread is running, trying to terminate...")
+        if hasattr(self, "download_thread") and self.download_thread.isRunning():
+            Logger.info(
+                "ProgressWindow",
+                "closeEvent",
+                "DownloadThread is running, trying to terminate...",
+            )
             self.download_thread.terminate()
             self.download_thread.wait()
-            Logger.info("ProgressWindow", "closeEvent", "DownloadThread has been terminated")
+            Logger.info(
+                "ProgressWindow", "closeEvent", "DownloadThread has been terminated"
+            )
 
         try:
             # 获取程序路径
-            if getattr(sys, "frozen", False):
-                # 如果是打包后的 exe
-                app_path = os.path.dirname(sys.executable)
-            else:
-                # 如果是开发环境
-                app_path = os.path.dirname(os.path.abspath(__file__))
+            app_path = get_app_path()
 
             # 删除临时版本文件
             tmp_version_file_path = os.path.join(app_path, "data/version.tmp")
@@ -140,29 +142,41 @@ class ProgressWindow(QMainWindow):
 
             if os.path.exists(tmp_version_file_path):
                 os.remove(tmp_version_file_path)
-                Logger.info("ProgressWindow", "closeEvent", f"Temporary file {tmp_version_file_path} deleted successfully.")
+                Logger.info(
+                    "ProgressWindow",
+                    "closeEvent",
+                    f"Temporary file {tmp_version_file_path} deleted successfully.",
+                )
             else:
-                Logger.info("ProgressWindow", "closeEvent", f"Temporary file {tmp_version_file_path} does not exist.")
+                Logger.info(
+                    "ProgressWindow",
+                    "closeEvent",
+                    f"Temporary file {tmp_version_file_path} does not exist.",
+                )
 
             # 删除未下载完的更新包
             exe_path = os.path.join(app_path, Settings.APP_NAME + ".exe.tmp")
             Logger.info("ProgressWindow", "closeEvent", f"Delete file: {exe_path}")
             if os.path.exists(exe_path):
                 os.remove(exe_path)
-                Logger.info("ProgressWindow", "closeEvent", "Update package deleted successfully.")
+                Logger.info(
+                    "ProgressWindow",
+                    "closeEvent",
+                    "Update package deleted successfully.",
+                )
 
         except Exception as e:
-            Logger.error("ProgressWindow", "closeEvent", f"Failed to delete temporary files: {str(e)}")
-            
+            Logger.error(
+                "ProgressWindow",
+                "closeEvent",
+                f"Failed to delete temporary files: {str(e)}",
+            )
+
         Logger.info("ProgressWindow", "closeEvent", "Close event handled.")
 
     def start_update(self):
         # 获取程序路径
-        if getattr(sys, "frozen", False):
-            app_path = os.path.dirname(sys.executable)
-        else:
-            app_path = os.path.dirname(os.path.abspath(__file__))
-
+        app_path = get_app_path()
         exe_path = os.path.join(app_path, Settings.APP_NAME + ".exe")
 
         # 创建下载线程
@@ -205,16 +219,16 @@ class ProgressWindow(QMainWindow):
                 tmp_version_file_path = Settings.BASE_DIR + "/version.tmp"
             with open(tmp_version_file_path, "r", encoding="utf-8") as file:
                 version_info = json.load(file)
-                
+
             # 保存到正式文件
             if not os.path.exists("data"):
                 os.makedirs("data", exist_ok=True)
             with open("data/version.json", "w", encoding="utf-8") as file:
                 json.dump(version_info, file, ensure_ascii=False, indent=4)
-                
+
             # 删除临时文件
             os.remove(tmp_version_file_path)
-            
+
             Logger.info("ProgressWindow", "update_version_file", "版本文件更新成功")
             return True
 

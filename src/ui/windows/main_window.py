@@ -33,6 +33,7 @@ try:
     from utils.logger import Logger
     from core.services.evaluator import Evaluator
     from core.services.update_checker import UpdateChecker
+    from utils.file import get_app_path
     import resources.resources_rc
 except ImportError as e:
     Logger.error("main_window.py", "main_window", "ImportError: " + str(e), color="red")
@@ -260,39 +261,48 @@ class MainWindow(QMainWindow):
     def check_update(self):
         """检查更新"""
         need_update, msg = self.update_checker.check_update()
-        if need_update:
-            if not self.update_checker.error_message:
-                Logger.info(
-                    "MainWindow",
-                    "check_update",
-                    f"need_update: {need_update}, msg: {msg}",
-                )
-                self.console_output.append(msg)
-                if MessageDialog.show_update(
-                    "更新提示", self.update_checker.version_info, "更新", "取消"
-                ):
-                    # 用户选择更新，启动更新程序并退出当前程序
-                    updater_path = os.path.join(Settings.BASE_DIR, "updater.exe")
-                    if os.path.exists(updater_path):
-                        os.startfile(updater_path)
-                        sys.exit()
-                    else:
-                        self.console_output.append("更新程序不存在.")
-                        self.show()
-                else:
-                    # 用户取消更新,删除临时文件
-                    if os.path.exists("version.tmp"):
-                        os.remove("version.tmp")
+        self.console_output.append(msg)
+        
+        # 删除临时文件
+        def remove_temp_file():
+            app_path = get_app_path()
+            tmp_version_file_path = os.path.join(app_path, "data/version.tmp")
+            Logger.info("MainWindow", "check_update", f"Temporary file path is {tmp_version_file_path}.")
+            
+            if not os.path.exists(tmp_version_file_path):
+                tmp_version_file_path = os.path.join(app_path, "version.tmp")
+                
+            if os.path.exists(tmp_version_file_path):
+                os.remove(tmp_version_file_path)
+                Logger.info("MainWindow", "check_update", f"Temporary file {tmp_version_file_path} deleted successfully.")
             else:
-                Logger.error(
-                    "MainWindow",
-                    "check_update",
-                    f"error_message: {self.update_checker.error_message}",
-                )
-                self.console_output.append(self.update_checker.error_message)
+                Logger.info("MainWindow", "check_update", f"Temporary file {tmp_version_file_path} does not exist.")
+
+        # 处理更新逻辑
+        if need_update and not self.update_checker.error_message:
+            Logger.info("MainWindow", "check_update", f"need_update: {need_update}, msg: {msg}")
+            
+            if MessageDialog.show_update("更新提示", self.update_checker.version_info, "更新", "取消"):
+                # 启动更新程序
+                updater_path = os.path.join(Settings.BASE_DIR, "updater.exe")
+                if os.path.exists(updater_path):
+                    os.startfile(updater_path)
+                    sys.exit()
+                else:
+                    remove_temp_file()
+                    self.console_output.append("更新程序不存在.")
+                    self.show()
+            else:
+                remove_temp_file()
+        elif need_update:
+            # 有错误信息
+            remove_temp_file()
+            Logger.error("MainWindow", "check_update", f"error_message: {self.update_checker.error_message}")
+            self.console_output.append(self.update_checker.error_message)
         else:
+            # 无需更新
+            remove_temp_file()
             Logger.error("MainWindow", "check_update", f"no need update, msg: {msg}")
-            self.console_output.append(msg)
         
         # 显示窗口
         self.show()

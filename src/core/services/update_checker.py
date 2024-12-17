@@ -7,6 +7,8 @@ import os
 import json
 import requests
 
+from utils.file import get_app_path
+
 try:
     sys.path.append(
         os.path.abspath(os.path.join(os.path.dirname(__file__), "./../../"))
@@ -104,11 +106,7 @@ class UpdateChecker:
     def _load_current_version(self):
         version_file_path = Settings.BASE_DIR + "/data/version.json"
         if not os.path.exists(Settings.BASE_DIR + "/data"):
-            # 获取程序路径
-            if getattr(sys, "frozen", False):
-                app_path = os.path.dirname(sys.executable)
-            else:
-                app_path = os.path.dirname(os.path.abspath(__file__))
+            app_path = get_app_path()
             Logger.info(
                 "update_checker.py", "_load_current_version", f"app_path: {app_path}"
             )
