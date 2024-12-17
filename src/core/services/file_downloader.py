@@ -35,26 +35,15 @@ class DownloadThread(QThread):
         self.release_info = None
 
     def run(self):
+        temp_path = f"{self.save_path}.tmp"
         try:
             self.status_signal.emit("准备更新...")
-
-            # 获取发布信息
-            response = requests.get(self.api_url)
-            response.raise_for_status()
-
-            # 开始下载
             self.status_signal.emit("准备开始下载...")
-
-            # 下载到临时文件
-            temp_path = f"{self.save_path}.tmp"
 
             # 开始流下载文件
             response = requests.get(self.download_url, stream=True)
-            print(response)
-
-            # 获取文件大小
+            response.raise_for_status()
             total_size = int(response.headers.get("content-length", 0))
-
             if total_size == 0:
                 self.status_signal.emit("无法获取文件大小")
                 self.finished_signal.emit(False)
@@ -100,6 +89,19 @@ class DownloadThread(QThread):
             self.finished_signal.emit(True)
 
         except Exception as e:
+            # 清理临时文件
+            if os.path.exists(temp_path):
+                try:
+                    os.remove(temp_path)
+                except:
+                    pass
+            
             self.status_signal.emit("更新失败，请检查网络")
-            MessageDialog.show_error("出错啦", "更新失败: {}".format(str(e)))
+            Logger.error("file_downloader.py", "run", f"下载失败: {str(e)}")
+            MessageDialog.show_error("出错啦", f"更新失败: {str(e)}")
             self.finished_signal.emit(False)
+        
+        finally:
+            # 确保线程正常结束
+            if not self.isFinished():
+                self.quit()

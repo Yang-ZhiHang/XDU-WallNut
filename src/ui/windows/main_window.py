@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QTabWidget,
     QScrollArea,
-    QLabel,
+    QCheckBox,
 )
 from PyQt5.QtCore import Qt, QTimer
 
@@ -125,8 +125,14 @@ class MainWindow(QMainWindow):
 
         # ------------------------------- 设置 start
         self.layout_setting = QVBoxLayout()
-
-        self.empty_label = QLabel("这里什么都没有...")
+        
+        # 添加置顶复选框
+        self.setting_widget = QWidget()
+        self.setting_layout = QVBoxLayout()
+        
+        self.always_on_top = QCheckBox("窗口置顶")
+        self.always_on_top.stateChanged.connect(self._toggle_always_on_top)
+        self.always_on_top.setChecked(True)
         # ------------------------------- 设置 end
 
         self.setWindowFlags(Qt.FramelessWindowHint)
@@ -144,16 +150,6 @@ class MainWindow(QMainWindow):
 
         # -------------------------------------- 设置 start
         self.layout_setting.setAlignment(Qt.AlignCenter)  # 居中对齐
-        self.empty_label.setAlignment(Qt.AlignCenter)  # 文字居中
-        self.empty_label.setStyleSheet(
-            """
-            QLabel {
-                font-size: 16px;
-                color: #666666;
-                padding: 20px;
-            }
-        """
-        )
         # -------------------------------------- 设置 end
 
     def _apply_components(self):
@@ -177,7 +173,9 @@ class MainWindow(QMainWindow):
         # ------------------------------- 增强模式 end
 
         # ------------------------------- 设置 start
-        self.layout_setting.addWidget(self.empty_label)
+        self.setting_layout.addWidget(self.always_on_top)
+        self.setting_widget.setLayout(self.setting_layout)
+        self.layout_setting.addWidget(self.setting_widget)
         self.setting_tab.setLayout(self.layout_setting)
         # ------------------------------- 设置 end
 
@@ -305,3 +303,10 @@ class MainWindow(QMainWindow):
         
         # 显示窗口
         self.show()
+
+    def _toggle_always_on_top(self, state):
+        if state == Qt.Checked:
+            self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+        else:
+            self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
+        self.show()  # 重新显示窗口应用更改

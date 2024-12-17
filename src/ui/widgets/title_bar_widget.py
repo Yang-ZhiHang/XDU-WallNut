@@ -60,31 +60,32 @@ class TitleBarWidget(QWidget):
         self.min_button.setFixedSize(30, 30)
         self.close_button.setFixedSize(30, 30)
 
-
     def _set_component_style(self):
         self.main_layout.setContentsMargins(0, 0, 0, 0)
+
         # 设置外层窗口样式
-        self.setStyleSheet(
-            """
-            QWidget {
-                background-color: transparent;
-            }
-            """
-        )
-        
+        # self.setStyleSheet(
+        #     """
+        #     QWidget {
+        #         background-color: transparent;
+        #     }
+        #     """
+        # )
+
         # 设置内部容器样式
         self.container.setStyleSheet(
             """
             QWidget {
                 background-color: #1e1e1e;
-                border-top-left-radius: 8px;
-                border-top-right-radius: 8px;
+                border-radius: 8px;
             }
             """
         )
 
-        self.title_bar.setContentsMargins(0, 0, 0, 0)
-        self.title_bar.setSpacing(0)
+        # self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.title_bar.setContentsMargins(8, 8, 8, 8)  # 组件外边距
+        self.title_bar.setSpacing(8)  # 组件间距
+        self.title_bar.setSizeConstraint(QHBoxLayout.SetMinAndMaxSize)
 
         # 设置按钮样式
         button_style = """
@@ -134,7 +135,7 @@ class TitleBarWidget(QWidget):
         """
         )
 
-    def _apply_component(self):        
+    def _apply_component(self):
         self.title_bar.addWidget(self.icon_label)
         self.title_bar.addWidget(self.title_label)
         self.title_bar.addWidget(self.min_button)
