@@ -132,7 +132,7 @@ class MainWindow(QMainWindow):
         
         self.always_on_top = QCheckBox("窗口置顶")
         self.always_on_top.stateChanged.connect(self._toggle_always_on_top)
-        self.always_on_top.setChecked(True)
+        # self.always_on_top.setChecked(True)
         # ------------------------------- 设置 end
 
         self.setWindowFlags(Qt.FramelessWindowHint)
@@ -245,7 +245,7 @@ class MainWindow(QMainWindow):
                         )
         except Exception as e:
             self.console_output.append(f"脚本执行失败: {e}")
-            self.console_output.append("请检查输入的题目数量是否为纯数字")
+            self.console_output.append("请检查输入的题目数量是���为纯数字")
             Logger.error("MainWindow", "_execute_script", f"脚本执行失败: {e}")
 
         self.console_output.append("脚本执行完毕...")
@@ -305,8 +305,11 @@ class MainWindow(QMainWindow):
         self.show()
 
     def _toggle_always_on_top(self, state):
+        """切换窗口置顶状态"""
         if state == Qt.Checked:
             self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
         else:
             self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
-        self.show()  # 重新显示窗口应用更改
+        
+        # 显示窗口以应用更改
+        self.show()
