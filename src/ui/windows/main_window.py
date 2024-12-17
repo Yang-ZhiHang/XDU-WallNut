@@ -245,7 +245,7 @@ class MainWindow(QMainWindow):
                         )
         except Exception as e:
             self.console_output.append(f"脚本执行失败: {e}")
-            self.console_output.append("请检查输入的题目数量是���为纯数字")
+            self.console_output.append("请检查输入的题目数量是否为纯数字")
             Logger.error("MainWindow", "_execute_script", f"脚本执行失败: {e}")
 
         self.console_output.append("脚本执行完毕...")
