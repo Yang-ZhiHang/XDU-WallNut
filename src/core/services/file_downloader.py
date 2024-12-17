@@ -40,14 +40,16 @@ class DownloadThread(QThread):
             self.status_signal.emit("准备更新...")
             self.status_signal.emit("准备开始下载...")
 
-            # 开始流下载文件
-            response = requests.get(self.download_url, stream=True)
+            # 设置超时时间
+            response = requests.get(
+                self.download_url, 
+                stream=True, 
+                timeout=10  # 添加10秒超时
+            )
             response.raise_for_status()
             total_size = int(response.headers.get("content-length", 0))
             if total_size == 0:
-                self.status_signal.emit("无法获取文件大小")
-                self.finished_signal.emit(False)
-                return
+                raise Exception("无法获取文件大小")
 
             # 每次下载的块大小
             block_size = 1024
@@ -68,7 +70,7 @@ class DownloadThread(QThread):
 
                     # 根据进度显示不同的提示语
                     progress_messages = [
-                        "正在偷偷下载更新...",
+                        "正在从 Github 下载更新...",
                         "正在注入代码到嬉笑颠...",
                         "正在拼装代码...",
                         "正在充能...",
@@ -88,20 +90,29 @@ class DownloadThread(QThread):
             # 发送完成信号
             self.finished_signal.emit(True)
 
+        except requests.exceptions.Timeout:
+            self.status_signal.emit("下载超时，请检查网络连接")
+            Logger.error("file_downloader.py", "run", "下载超时")
+            self.finished_signal.emit(False)
+            
+        except requests.exceptions.RequestException as e:
+            self.status_signal.emit("网络连接失败")
+            Logger.error("file_downloader.py", "run", f"网络连接失败: {str(e)}")
+            self.finished_signal.emit(False)
+            
         except Exception as e:
+            self.status_signal.emit("更新失败，请检查网络")
+            Logger.error("file_downloader.py", "run", f"下载失败: {str(e)}")
+            self.finished_signal.emit(False)
+            
+        finally:
             # 清理临时文件
             if os.path.exists(temp_path):
                 try:
                     os.remove(temp_path)
-                except:
-                    pass
+                except Exception as e:
+                    Logger.error("file_downloader.py", "run", f"清理临时文件失败: {str(e)}")
             
-            self.status_signal.emit("更新失败，请检查网络")
-            Logger.error("file_downloader.py", "run", f"下载失败: {str(e)}")
-            MessageDialog.show_error("出错啦", f"更新失败: {str(e)}")
-            self.finished_signal.emit(False)
-        
-        finally:
             # 确保线程正常结束
-            if not self.isFinished():
-                self.quit()
+            self.quit()
+            self.wait()  # 等待线程结束

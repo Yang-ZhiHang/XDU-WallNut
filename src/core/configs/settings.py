@@ -11,7 +11,7 @@ class Settings:
     APP_NAME = "XDU_WallNut"
 
     # 窗口相关
-    WINDOW_TITLE = "XDU一键评教"
+    WINDOW_TITLE = "XDU WallNut 一键评教"
     WINDOW_SIZE = (400, 600)
 
     # 更新窗口相关

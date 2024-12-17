@@ -3,11 +3,20 @@
 """
 
 import json
-from PyQt5.QtWidgets import QMainWindow, QApplication, QProgressBar, QLabel, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import (
+    QMainWindow,
+    QApplication,
+    QProgressBar,
+    QLabel,
+    QVBoxLayout,
+    QWidget,
+)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 import os
 import sys
+
+from core.loaders.web_loader import WebLoader
 
 try:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -55,7 +64,8 @@ class ProgressWindow(QMainWindow):
         self.status_label = QLabel("正在初始化...")
 
         self.progress_bar = QProgressBar()
-        self.title_bar = TitleBarWidget()
+        self.web_loader = WebLoader()
+        self.title_bar = TitleBarWidget(web_loader=self.web_loader)
 
     def _set_component_style(self):
         # 窗口样式
@@ -116,23 +126,16 @@ class ProgressWindow(QMainWindow):
 
     def closeEvent(self, event):
         """重写关闭事件，删除临时文件"""
-        Logger.info(
-            "ProgressWindow", "closeEvent", "Handle close event.", color="white"
-        )
-        event.accept()
 
-        # 如果下载线程存在且正在运行，则停止它
+        # 如果下载线程存在且正在运行，则停止
         if hasattr(self, "download_thread") and self.download_thread.isRunning():
-            Logger.info(
-                "ProgressWindow",
-                "closeEvent",
-                "DownloadThread is running, trying to terminate...",
-            )
-            self.download_thread.terminate()
-            self.download_thread.wait()
-            Logger.info(
-                "ProgressWindow", "closeEvent", "DownloadThread has been terminated"
-            )
+            Logger.info("ProgressWindow", "closeEvent", "Stopping download thread...")
+            self.download_thread.quit()
+            if not self.download_thread.wait(1000):
+                self.download_thread.terminate()  # 等待超时，强制终止
+                self.download_thread.wait()
+
+        event.accept()
 
         try:
             # 获取程序路径
@@ -141,6 +144,11 @@ class ProgressWindow(QMainWindow):
             # 删除临时版本文件
             tmp_version_file_path = os.path.join(app_path, "data/version.tmp")
             if not os.path.exists(tmp_version_file_path):
+                Logger.info(
+                    "ProgressWindow",
+                    "closeEvent",
+                    f"Temporary file {tmp_version_file_path} does not exist.",
+                )
                 tmp_version_file_path = os.path.join(app_path, "version.tmp")
 
             if os.path.exists(tmp_version_file_path):
@@ -157,7 +165,7 @@ class ProgressWindow(QMainWindow):
                     f"Temporary file {tmp_version_file_path} does not exist.",
                 )
 
-            # 删除未下载完的更新包
+            # 如果下载线程未结束，删除未下载完的更新包
             exe_path = os.path.join(app_path, Settings.APP_NAME + ".exe.tmp")
             Logger.info("ProgressWindow", "closeEvent", f"Delete file: {exe_path}")
             if os.path.exists(exe_path):
@@ -174,8 +182,6 @@ class ProgressWindow(QMainWindow):
                 "closeEvent",
                 f"Failed to delete temporary files: {str(e)}",
             )
-
-        Logger.info("ProgressWindow", "closeEvent", "Close event handled.")
 
     def start_update(self):
         # 获取程序路径
@@ -195,7 +201,7 @@ class ProgressWindow(QMainWindow):
         self.download_thread.finished_signal.connect(self.update_finished)
 
         # 启动下载
-        Logger.info("ProgressWindow", "start_update", "开始下载更新包...")
+        Logger.info("ProgressWindow", "start_update", "Starting download...")
         self.download_thread.start()
 
     def update_finished(self, success):
