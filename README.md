@@ -1,5 +1,5 @@
 <p align="center">
-  <h1 align="center">一键评教 WallNut 版</h1>
+  <h1 align="center">预评教 WallNut 版</h1>
 </p>
 
 <p align="center">
