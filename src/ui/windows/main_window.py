@@ -61,8 +61,8 @@ class MainWindow(QMainWindow):
         设置布局框架
 
         中心布局 -> 标签页:
-            - 普通模式布局
-            - 增强模式布局
+            - 实验评教布局
+            - 期末评教布局
         """
 
         # 创建中心部件和主布局(中心部件包含主布局)
@@ -78,12 +78,12 @@ class MainWindow(QMainWindow):
         self.layout_normal = QVBoxLayout(self.normal_tab)
 
         # 设置分页
-        self.tab_widget.addTab(self.normal_tab, "普通模式")
-        self.tab_widget.addTab(self.enhanced_tab, "增强模式")
+        self.tab_widget.addTab(self.normal_tab, "实验评教")
+        self.tab_widget.addTab(self.enhanced_tab, "期末评教")
         self.tab_widget.addTab(self.setting_tab, "设置")
 
     def _load_components(self):
-        # ------------------------------- 普通模式 start
+        # ------------------------------- 实验评教 start
         self.forms_normal_mode = []
         self.forms_normal_mode.append(
             InputForm(
@@ -101,9 +101,9 @@ class MainWindow(QMainWindow):
                 form_type="text",
             )
         )
-        # ------------------------------- 普通模式 end
+        # ------------------------------- 实验评教 end
 
-        # ------------------------------- 增强模式 start
+        # ------------------------------- 期末评教 start
         # 添加滚动区域
         self.layout_enhanced = QVBoxLayout()
         self.enhanced_content = QWidget()
@@ -121,15 +121,15 @@ class MainWindow(QMainWindow):
                     form_type="choice",
                 )
             )
-        # ------------------------------- 增强模式 end
+        # ------------------------------- 期末评教 end
 
         # ------------------------------- 设置 start
         self.layout_setting = QVBoxLayout()
-        
+
         # 添加置顶复选框
         self.setting_widget = QWidget()
         self.setting_layout = QVBoxLayout()
-        
+
         self.always_on_top = QCheckBox("窗口置顶")
         self.always_on_top.stateChanged.connect(self._toggle_always_on_top)
         # self.always_on_top.setChecked(True)
@@ -138,7 +138,9 @@ class MainWindow(QMainWindow):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.web_loader = WebLoader()
         self.console_output = ConsoleOutput()
-        self.title_bar = TitleBarWidget(web_loader=self.web_loader, console_output=self.console_output)
+        self.title_bar = TitleBarWidget(
+            web_loader=self.web_loader, console_output=self.console_output
+        )
 
         self._app_icon = QIcon(Icon.logo_ico_path)
         self.start_button = StartButton()
@@ -154,15 +156,15 @@ class MainWindow(QMainWindow):
 
     def _apply_components(self):
 
-        # ------------------------------- 普通模式 start
+        # ------------------------------- 实验评教 start
         self.layout_normal.addLayout(self.forms_normal_mode[0])
         self.layout_normal.addLayout(self.forms_normal_mode[1])
         self.forms_normal_mode[0].update_visibility()
         self.forms_normal_mode[1].update_visibility()
 
-        # ------------------------------- 普通模式 end
+        # ------------------------------- 实验评教 end
 
-        # ------------------------------- 增强模式 start
+        # ------------------------------- 期末评教 start
         self.enhanced_content.setLayout(self.layout_enhanced)
         self.enhanced_scroll.setWidget(self.enhanced_content)
         self.enhanced_main_layout.addWidget(self.enhanced_scroll)
@@ -170,7 +172,7 @@ class MainWindow(QMainWindow):
         for form in self.forms_enhanced_mode:
             self.layout_enhanced.addLayout(form)
             form.update_visibility()
-        # ------------------------------- 增强模式 end
+        # ------------------------------- 期末评教 end
 
         # ------------------------------- 设置 start
         self.setting_layout.addWidget(self.always_on_top)
@@ -195,17 +197,17 @@ class MainWindow(QMainWindow):
     def _script_start(self):
         """脚本开始"""
 
-        # 判断当前页是普通模式还是增强模式
+        # 判断当前页是实验评教还是期末评教
         current_tab = self.tab_widget.currentWidget()
         if current_tab == self.normal_tab:
-            self.console_output.append("当前模式: 普通模式")
+            self.console_output.append("当前模式: 实验评教")
         elif current_tab == self.enhanced_tab:
-            self.console_output.append("当前模式: 增强模式")
+            self.console_output.append("当前模式: 期末评教")
         else:
             self.console_output.append("当前模式: 未知，拒绝启动")
             return
 
-        MessageDialog.show_info("提示", "请进入一键评教界面，点击空白处开始执行脚本")
+        MessageDialog.show_info("提示", "请进入一键评教界面，在3秒内选择第一道题的第一个选择题")
 
         # 创建倒计时定时器
         self.countdown = 3
@@ -233,22 +235,36 @@ class MainWindow(QMainWindow):
             form_data = [form.get_form_data() for form in self.forms_enhanced_mode]
 
         try:
+            first_form = True
             for form in form_data:
                 if form["active"]:
                     if form["type"] == "choice":
-                        Evaluator.choices_script_start(
-                            int(form["num_of_questions"]), form["option"]
-                        )
+                        if first_form:
+                            Evaluator.choices_script_start(
+                                int(form["num_of_questions"]) - 1, form["option"]
+                            )
+                            first_form = False
+                        else:
+                            Evaluator.choices_script_start(
+                                int(form["num_of_questions"]), form["option"]
+                            )
                     elif form["type"] == "text":
-                        Evaluator.text_script_start(
-                            int(form["num_of_questions"]), form["text"]
-                        )
+                        if first_form:
+                            Evaluator.text_script_start(
+                                int(form["num_of_questions"]) - 1, form["text"]
+                            )
+                            first_form = False
+                        else:
+                            Evaluator.text_script_start(
+                                int(form["num_of_questions"]), form["text"]
+                            )
+            self.console_output.append("脚本执行完毕...")
         except Exception as e:
             self.console_output.append(f"脚本执行失败: {e}")
             self.console_output.append("请检查输入的题目数量是否为纯数字")
             Logger.error("MainWindow", "_execute_script", f"脚本执行失败: {e}")
+            MessageDialog.show_error("错误", f"请检查输入的题目数量是否为纯数字")
 
-        self.console_output.append("脚本执行完毕...")
         self.start_button.reset()
 
     def _script_stop(self):
@@ -259,27 +275,43 @@ class MainWindow(QMainWindow):
         """检查更新"""
         need_update, msg = self.update_checker.check_update()
         self.console_output.append(msg)
-        
+
         # 删除临时文件
         def remove_temp_file():
             app_path = get_app_path()
             tmp_version_file_path = os.path.join(app_path, "data/version.tmp")
-            Logger.info("MainWindow", "check_update", f"Temporary file path is {tmp_version_file_path}.")
-            
+            Logger.info(
+                "MainWindow",
+                "check_update",
+                f"Temporary file path is {tmp_version_file_path}.",
+            )
+
             if not os.path.exists(tmp_version_file_path):
                 tmp_version_file_path = os.path.join(app_path, "version.tmp")
-                
+
             if os.path.exists(tmp_version_file_path):
                 os.remove(tmp_version_file_path)
-                Logger.info("MainWindow", "check_update", f"Temporary file {tmp_version_file_path} deleted successfully.")
+                Logger.info(
+                    "MainWindow",
+                    "check_update",
+                    f"Temporary file {tmp_version_file_path} deleted successfully.",
+                )
             else:
-                Logger.info("MainWindow", "check_update", f"Temporary file {tmp_version_file_path} does not exist.")
+                Logger.info(
+                    "MainWindow",
+                    "check_update",
+                    f"Temporary file {tmp_version_file_path} does not exist.",
+                )
 
         # 处理更新逻辑
         if need_update and not self.update_checker.error_message:
-            Logger.info("MainWindow", "check_update", f"need_update: {need_update}, msg: {msg}")
-            
-            if MessageDialog.show_update("更新提示", self.update_checker.version_info, "更新", "取消"):
+            Logger.info(
+                "MainWindow", "check_update", f"need_update: {need_update}, msg: {msg}"
+            )
+
+            if MessageDialog.show_update(
+                "更新提示", self.update_checker.version_info, "更新", "取消"
+            ):
                 # 启动更新程序
                 updater_path = os.path.join(Settings.BASE_DIR, "updater.exe")
                 if os.path.exists(updater_path):
@@ -294,13 +326,17 @@ class MainWindow(QMainWindow):
         elif need_update:
             # 有错误信息
             remove_temp_file()
-            Logger.error("MainWindow", "check_update", f"error_message: {self.update_checker.error_message}")
+            Logger.error(
+                "MainWindow",
+                "check_update",
+                f"error_message: {self.update_checker.error_message}",
+            )
             self.console_output.append(self.update_checker.error_message)
         else:
             # 无需更新
             remove_temp_file()
             Logger.error("MainWindow", "check_update", f"no need update, msg: {msg}")
-        
+
         # 显示窗口
         self.show()
 
@@ -310,6 +346,6 @@ class MainWindow(QMainWindow):
             self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
         else:
             self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
-        
+
         # 显示窗口以应用更改
         self.show()
