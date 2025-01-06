@@ -19,3 +19,8 @@ class Logger:
     def error(file_name, func_name, message):
         print(f"\033[1;31m[{file_name}][{func_name}] {message}\033[0m")
 
+    @staticmethod
+    def success(file_name, func_name, message):
+        print(f"\033[1;32m[{file_name}][{func_name}] {message}\033[0m")
+
+

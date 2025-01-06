@@ -15,6 +15,9 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt, QTimer
 
+from ui.widgets.text_box_widget import TextBoxWidget
+from core.services.user_setting import UserSettings
+
 
 try:
     sys.path.append(
@@ -26,7 +29,8 @@ try:
     from core.loaders.style_loader import StyleLoader
     from core.loaders.web_loader import WebLoader
     from ui.widgets.console_widget import ConsoleOutput
-    from ui.widgets.input_form_widget import InputForm
+    from ui.widgets.experiment_form_widget import ExperimentForm
+    from ui.widgets.final_form_widget import FinalForm
     from ui.widgets.start_button_widget import StartButton
     from ui.dialogs.message_dialog import MessageDialog
     from ui.widgets.title_bar_widget import TitleBarWidget
@@ -56,6 +60,9 @@ class MainWindow(QMainWindow):
         self._set_component_style()
         self._apply_components()
 
+        self.check_update()
+        self.check_settings()
+
     def _set_main_layout(self):
         """
         设置布局框架
@@ -83,10 +90,15 @@ class MainWindow(QMainWindow):
         self.tab_widget.addTab(self.setting_tab, "设置")
 
     def _load_components(self):
+
+        self.console_output = ConsoleOutput()
+        self.web_loader = WebLoader()
+        self.user_settings = UserSettings()
+
         # ------------------------------- 实验评教 start
         self.forms_normal_mode = []
         self.forms_normal_mode.append(
-            InputForm(
+            ExperimentForm(
                 "是否评教选择题：",
                 OPTION_LABELS,
                 default_option="yes",
@@ -94,7 +106,7 @@ class MainWindow(QMainWindow):
             )
         )
         self.forms_normal_mode.append(
-            InputForm(
+            ExperimentForm(
                 "是否评教文本框：",
                 COMMENTS_OPTIONS,
                 default_option="no",
@@ -111,10 +123,13 @@ class MainWindow(QMainWindow):
         self.enhanced_scroll.setWidgetResizable(True)
         self.enhanced_main_layout = QVBoxLayout()
 
+        # 题目数量
+        self.layout_num_of_question = TextBoxWidget("待评教的老师个数：")
+
         self.forms_enhanced_mode = []
         for i in range(10):
             self.forms_enhanced_mode.append(
-                InputForm(
+                FinalForm(
                     f"评教项目 { i + 1 }：",
                     OPTION_LABELS,
                     default_option="yes",
@@ -124,20 +139,25 @@ class MainWindow(QMainWindow):
         # ------------------------------- 期末评教 end
 
         # ------------------------------- 设置 start
-        self.layout_setting = QVBoxLayout()
-
         # 添加置顶复选框
         self.setting_widget = QWidget()
         self.setting_layout = QVBoxLayout()
 
         self.always_on_top = QCheckBox("窗口置顶")
         self.always_on_top.stateChanged.connect(self._toggle_always_on_top)
-        # self.always_on_top.setChecked(True)
+
+        # 添加自动打开网站选项
+        self.auto_open_website = QCheckBox("下次自动打开网站")
+        self.website_url = TextBoxWidget("网站链接：")
+
+        # 从设置中加载状态
+        self.auto_open_website.setChecked(
+            self.user_settings.get("auto_open_website", False, self.console_output)
+        )
+        self.website_url.textbox.setText(self.user_settings.get("website_url", "", self.console_output))
         # ------------------------------- 设置 end
 
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.web_loader = WebLoader()
-        self.console_output = ConsoleOutput()
         self.title_bar = TitleBarWidget(
             web_loader=self.web_loader, console_output=self.console_output
         )
@@ -149,10 +169,7 @@ class MainWindow(QMainWindow):
         self.update_checker = UpdateChecker()
 
     def _set_component_style(self):
-
-        # -------------------------------------- 设置 start
-        self.layout_setting.setAlignment(Qt.AlignCenter)  # 居中对齐
-        # -------------------------------------- 设置 end
+        self.setting_layout.setAlignment(Qt.AlignTop)  # 设置垂直居上对齐
 
     def _apply_components(self):
 
@@ -165,10 +182,12 @@ class MainWindow(QMainWindow):
         # ------------------------------- 实验评教 end
 
         # ------------------------------- 期末评教 start
+        self.layout_enhanced.addLayout(self.layout_num_of_question)
         self.enhanced_content.setLayout(self.layout_enhanced)
         self.enhanced_scroll.setWidget(self.enhanced_content)
         self.enhanced_main_layout.addWidget(self.enhanced_scroll)
         self.enhanced_tab.setLayout(self.enhanced_main_layout)
+
         for form in self.forms_enhanced_mode:
             self.layout_enhanced.addLayout(form)
             form.update_visibility()
@@ -176,9 +195,11 @@ class MainWindow(QMainWindow):
 
         # ------------------------------- 设置 start
         self.setting_layout.addWidget(self.always_on_top)
-        self.setting_widget.setLayout(self.setting_layout)
-        self.layout_setting.addWidget(self.setting_widget)
-        self.setting_tab.setLayout(self.layout_setting)
+        self.setting_layout.addWidget(self.auto_open_website)
+        self.setting_layout.addLayout(self.website_url)
+        self.setting_tab.setLayout(self.setting_layout)
+        self.auto_open_website.stateChanged.connect(self._toggle_website_input)
+        self.website_url.textbox.textChanged.connect(self._save_website_url)
         # ------------------------------- 设置 end
 
         self.setWindowIcon(self._app_icon)
@@ -207,7 +228,9 @@ class MainWindow(QMainWindow):
             self.console_output.append("当前模式: 未知，拒绝启动")
             return
 
-        MessageDialog.show_info("提示", "请进入一键评教界面，在3秒内选择第一道题的第一个选择题")
+        MessageDialog.show_info(
+            "提示", "请进入一键评教界面，在3秒内选择第一道题的第一个选择题"
+        )
 
         # 创建倒计时定时器
         self.countdown = 3
@@ -232,7 +255,10 @@ class MainWindow(QMainWindow):
         if self.tab_widget.currentWidget() == self.normal_tab:
             form_data = [form.get_form_data() for form in self.forms_normal_mode]
         elif self.tab_widget.currentWidget() == self.enhanced_tab:
-            form_data = [form.get_form_data() for form in self.forms_enhanced_mode]
+            question_num = self.layout_num_of_question.textbox.text()
+            form_data = [
+                form.get_form_data(question_num) for form in self.forms_enhanced_mode
+            ]
 
         try:
             first_form = True
@@ -337,8 +363,13 @@ class MainWindow(QMainWindow):
             remove_temp_file()
             Logger.error("MainWindow", "check_update", f"no need update, msg: {msg}")
 
-        # 显示窗口
-        self.show()
+    def check_settings(self):
+        """检查设置"""
+        # 在初始化完成后立即检查是否需要打开网页
+        if self.user_settings.get("auto_open_website", False):
+            url = self.user_settings.get("website_url", "")
+            if url:
+                self.web_loader.open_website(url, self.console_output)
 
     def _toggle_always_on_top(self, state):
         """切换窗口置顶状态"""
@@ -349,3 +380,12 @@ class MainWindow(QMainWindow):
 
         # 显示窗口以应用更改
         self.show()
+
+    def _toggle_website_input(self, state):
+        """保存自动打开网站状态"""
+        is_checked = state == Qt.Checked
+        self.user_settings.set("auto_open_website", is_checked)
+
+    def _save_website_url(self):
+        """保存网站链接"""
+        self.user_settings.set("website_url", self.website_url.textbox.text())
