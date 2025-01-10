@@ -1,3 +1,7 @@
+"""
+该模块用于定义文本框组件
+"""
+
 from PyQt5.QtWidgets import QHBoxLayout, QLineEdit, QLabel
 
 

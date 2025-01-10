@@ -42,9 +42,7 @@ class DownloadThread(QThread):
 
             # 设置超时时间
             response = requests.get(
-                self.download_url, 
-                stream=True, 
-                timeout=10  # 添加10秒超时
+                self.download_url, stream=True, timeout=10  # 添加10秒超时
             )
             response.raise_for_status()
             total_size = int(response.headers.get("content-length", 0))
@@ -94,25 +92,27 @@ class DownloadThread(QThread):
             self.status_signal.emit("下载超时，请检查网络连接")
             Logger.error("file_downloader.py", "run", "下载超时")
             self.finished_signal.emit(False)
-            
+
         except requests.exceptions.RequestException as e:
             self.status_signal.emit("网络连接失败")
             Logger.error("file_downloader.py", "run", f"网络连接失败: {str(e)}")
             self.finished_signal.emit(False)
-            
+
         except Exception as e:
             self.status_signal.emit("更新失败，请检查网络")
             Logger.error("file_downloader.py", "run", f"下载失败: {str(e)}")
             self.finished_signal.emit(False)
-            
+
         finally:
             # 清理临时文件
             if os.path.exists(temp_path):
                 try:
                     os.remove(temp_path)
                 except Exception as e:
-                    Logger.error("file_downloader.py", "run", f"清理临时文件失败: {str(e)}")
-            
+                    Logger.error(
+                        "file_downloader.py", "run", f"清理临时文件失败: {str(e)}"
+                    )
+
             # 确保线程正常结束
             self.quit()
             self.wait()  # 等待线程结束

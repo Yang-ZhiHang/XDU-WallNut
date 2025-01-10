@@ -154,7 +154,9 @@ class MainWindow(QMainWindow):
         self.auto_open_website.setChecked(
             self.user_settings.get("auto_open_website", False, self.console_output)
         )
-        self.website_url.textbox.setText(self.user_settings.get("website_url", "", self.console_output))
+        self.website_url.textbox.setText(
+            self.user_settings.get("website_url", "", self.console_output)
+        )
         # ------------------------------- 设置 end
 
         self.setWindowFlags(Qt.FramelessWindowHint)

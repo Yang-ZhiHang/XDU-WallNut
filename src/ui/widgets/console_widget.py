@@ -11,10 +11,6 @@ class ConsoleOutput(QTextEdit):
         self._init_console()
 
     def _init_console(self):
-        """
-        初始化控制台输出设置
-        """
-
         self.setReadOnly(True)
         self.setPlaceholderText("控制台输出将显示在这里...")
 

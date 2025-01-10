@@ -1,3 +1,7 @@
+"""
+该模块用于定义单选组件
+"""
+
 from PyQt5.QtWidgets import QVBoxLayout, QLabel, QRadioButton, QButtonGroup
 
 class SingleChoiceWidget(QVBoxLayout):

@@ -1,3 +1,7 @@
+"""
+该模块用于定义选择题可复用组件
+"""
+
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QRadioButton, QButtonGroup
 
 

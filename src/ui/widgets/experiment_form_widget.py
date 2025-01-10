@@ -1,3 +1,7 @@
+"""
+该模块用于定义实验评教表单组件
+"""
+
 from typing import List
 from PyQt5.QtWidgets import QVBoxLayout
 
@@ -57,7 +61,9 @@ class ExperimentForm(QVBoxLayout):
         self._layout_num_of_question = TextBoxWidget("题目数量：")
 
         # 单选组件：用于选择要批量选择的选项
-        self._layout_question_options = SingleChoiceWidget("要批量选择的选项：", options)
+        self._layout_question_options = SingleChoiceWidget(
+            "要批量选择的选项：", options
+        )
 
     def _setup_layout(self):
         """添加所有子布局到主布局"""
@@ -86,10 +92,12 @@ class ExperimentForm(QVBoxLayout):
                     "option": next(
                         (
                             i + 1
-                            for i, button in enumerate(self._layout_question_options.option_buttons)
+                            for i, button in enumerate(
+                                self._layout_question_options.option_buttons
+                            )
                             if button.isChecked()
                         ),
-                        0
+                        0,
                     ),
                 }
             elif self.form_type == "text":
@@ -97,7 +105,14 @@ class ExperimentForm(QVBoxLayout):
                     "type": self.form_type,
                     "active": True,
                     "num_of_questions": self._layout_num_of_question.textbox.text(),
-                    "text": next((button.text() for button in self._layout_question_options.option_buttons if button.isChecked()), ""),
+                    "text": next(
+                        (
+                            button.text()
+                            for button in self._layout_question_options.option_buttons
+                            if button.isChecked()
+                        ),
+                        "",
+                    ),
                 }
         else:
             form_data = {

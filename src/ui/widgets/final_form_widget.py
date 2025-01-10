@@ -1,9 +1,12 @@
+"""
+该模块用于定义期末评教表单组件
+"""
+
 from typing import List
 from PyQt5.QtWidgets import QVBoxLayout
 
 from ui.widgets.select_widget import SelectWidget
 from ui.widgets.single_choice_widget import SingleChoiceWidget
-from ui.widgets.text_box_widget import TextBoxWidget
 
 try:
     from utils.logger import Logger
@@ -81,7 +84,9 @@ class FinalForm(QVBoxLayout):
                 "option": next(
                     (
                         i + 1
-                        for i, button in enumerate(self._layout_question_options.option_buttons)
+                        for i, button in enumerate(
+                            self._layout_question_options.option_buttons
+                        )
                         if button.isChecked()
                     ),
                     0,
