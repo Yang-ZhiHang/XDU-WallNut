@@ -2,9 +2,6 @@
 该模块用于加载样式文件
 """
 
-"""
-该模块用于加载样式文件
-"""
 import os
 from pathlib import Path
 
