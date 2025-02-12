@@ -11,6 +11,10 @@
   <img src="https://img.shields.io/badge/License-Custom-red.svg" alt="License">
 </p>
 
+> 开发人员提示:
+> 
+> 请使用 `git clone --depth=1 https://github.com/Yang-ZhiHang/XDU-WallNut.git` 进行 clone，否则会 clone 失败
+
 > ⚠️ 免责声明:
 >
 > 1. 本程序仅供学习交流使用，严禁用于商业和非法用途
